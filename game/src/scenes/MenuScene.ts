@@ -27,13 +27,41 @@ export class MenuScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    this.createButton(GAME_WIDTH / 2, 300, textsData.ko.start, () => {
-      this.scene.start(SCENE_KEYS.GAME);
+    createTextButton(this, {
+      x: GAME_WIDTH / 2,
+      y: 300,
+      label: textsData.ko.start,
+      onClick: () => {
+        this.scene.start(SCENE_KEYS.GAME);
+      },
+      style: {
+        color: '#111111',
+        backgroundColor: '#ffe082',
+        fontFamily: 'sans-serif',
+        fontSize: '28px',
+        padding: { x: 14, y: 8 },
+      },
     });
 
-    this.createButton(GAME_WIDTH / 2, 370, '설정 (BGM/SFX)', () => this.toggleSettingsPanel());
+    createTextButton(this, {
+      x: GAME_WIDTH / 2,
+      y: 370,
+      label: '설정 (BGM/SFX)',
+      onClick: () => this.toggleSettingsPanel(),
+      style: {
+        color: '#111111',
+        backgroundColor: '#ffe082',
+        fontFamily: 'sans-serif',
+        fontSize: '28px',
+        padding: { x: 14, y: 8 },
+      },
+    });
 
-    this.createButton(GAME_WIDTH / 2, 440, '크레딧', () => {
+    createTextButton(this, {
+      x: GAME_WIDTH / 2,
+      y: 440,
+      label: '크레딧',
+      onClick: () => {
       this.add
         .text(GAME_WIDTH / 2, GAME_HEIGHT - 90, 'Made with Phaser + TypeScript', {
           color: '#cfd8dc',
@@ -59,15 +87,7 @@ export class MenuScene extends Phaser.Scene {
         hold: 900,
         onComplete: () => latest.destroy(),
       });
-    });
-  }
-
-  private createButton(x: number, y: number, text: string, onClick: () => void): void {
-    createTextButton(this, {
-      x,
-      y,
-      label: text,
-      onClick,
+    },
       style: {
         color: '#111111',
         backgroundColor: '#ffe082',
@@ -111,38 +131,116 @@ export class MenuScene extends Phaser.Scene {
 
     const controls: Phaser.GameObjects.Text[] = [];
     controls.push(
-      this.createSettingsButton(GAME_WIDTH / 2 - 110, GAME_HEIGHT / 2 + 25, 'BGM -', () => {
-        audioManager.adjustBgmVolume(-0.1);
-        this.refreshSettingsText();
+      createTextButton(this, {
+        x: GAME_WIDTH / 2 - 110,
+        y: GAME_HEIGHT / 2 + 25,
+        label: 'BGM -',
+        onClick: () => {
+          audioManager.adjustBgmVolume(-0.1);
+          this.refreshSettingsText();
+        },
+        style: {
+          color: '#111111',
+          backgroundColor: '#ffe082',
+          fontFamily: 'sans-serif',
+          fontSize: '18px',
+          padding: { x: 10, y: 6 },
+        },
+        depth: 1201,
       }),
     );
     controls.push(
-      this.createSettingsButton(GAME_WIDTH / 2 - 30, GAME_HEIGHT / 2 + 25, 'BGM +', () => {
-        audioManager.adjustBgmVolume(0.1);
-        this.refreshSettingsText();
+      createTextButton(this, {
+        x: GAME_WIDTH / 2 - 30,
+        y: GAME_HEIGHT / 2 + 25,
+        label: 'BGM +',
+        onClick: () => {
+          audioManager.adjustBgmVolume(0.1);
+          this.refreshSettingsText();
+        },
+        style: {
+          color: '#111111',
+          backgroundColor: '#ffe082',
+          fontFamily: 'sans-serif',
+          fontSize: '18px',
+          padding: { x: 10, y: 6 },
+        },
+        depth: 1201,
       }),
     );
     controls.push(
-      this.createSettingsButton(GAME_WIDTH / 2 + 30, GAME_HEIGHT / 2 + 25, 'SFX -', () => {
-        audioManager.adjustSfxVolume(-0.1);
-        this.refreshSettingsText();
+      createTextButton(this, {
+        x: GAME_WIDTH / 2 + 30,
+        y: GAME_HEIGHT / 2 + 25,
+        label: 'SFX -',
+        onClick: () => {
+          audioManager.adjustSfxVolume(-0.1);
+          this.refreshSettingsText();
+        },
+        style: {
+          color: '#111111',
+          backgroundColor: '#ffe082',
+          fontFamily: 'sans-serif',
+          fontSize: '18px',
+          padding: { x: 10, y: 6 },
+        },
+        depth: 1201,
       }),
     );
     controls.push(
-      this.createSettingsButton(GAME_WIDTH / 2 + 110, GAME_HEIGHT / 2 + 25, 'SFX +', () => {
-        audioManager.adjustSfxVolume(0.1);
-        this.refreshSettingsText();
+      createTextButton(this, {
+        x: GAME_WIDTH / 2 + 110,
+        y: GAME_HEIGHT / 2 + 25,
+        label: 'SFX +',
+        onClick: () => {
+          audioManager.adjustSfxVolume(0.1);
+          this.refreshSettingsText();
+        },
+        style: {
+          color: '#111111',
+          backgroundColor: '#ffe082',
+          fontFamily: 'sans-serif',
+          fontSize: '18px',
+          padding: { x: 10, y: 6 },
+        },
+        depth: 1201,
       }),
     );
     controls.push(
-      this.createSettingsButton(GAME_WIDTH / 2 - 70, GAME_HEIGHT / 2 + 75, '음소거', () => {
-        audioManager.toggleMuted();
-        this.refreshSettingsText();
+      createTextButton(this, {
+        x: GAME_WIDTH / 2 - 70,
+        y: GAME_HEIGHT / 2 + 75,
+        label: '음소거',
+        onClick: () => {
+          audioManager.toggleMuted();
+          this.refreshSettingsText();
+        },
+        style: {
+          color: '#111111',
+          backgroundColor: '#ffe082',
+          fontFamily: 'sans-serif',
+          fontSize: '18px',
+          padding: { x: 10, y: 6 },
+        },
+        depth: 1201,
       }),
     );
     controls.push(
-      this.createSettingsButton(GAME_WIDTH / 2 + 70, GAME_HEIGHT / 2 + 75, '닫기', () => {
-        this.toggleSettingsPanel();
+      createTextButton(this, {
+        x: GAME_WIDTH / 2 + 70,
+        y: GAME_HEIGHT / 2 + 75,
+        label: '닫기',
+        onClick: () => {
+          this.toggleSettingsPanel();
+        },
+        style: {
+          color: '#111111',
+          backgroundColor: '#ffe082',
+          fontFamily: 'sans-serif',
+          fontSize: '18px',
+          padding: { x: 10, y: 6 },
+        },
+        depth: 1201,
       }),
     );
 
@@ -152,28 +250,6 @@ export class MenuScene extends Phaser.Scene {
       this.settingsText,
       ...controls,
     ];
-  }
-
-  private createSettingsButton(
-    x: number,
-    y: number,
-    label: string,
-    onClick: () => void,
-  ): Phaser.GameObjects.Text {
-    return createTextButton(this, {
-      x,
-      y,
-      label,
-      onClick,
-      style: {
-        color: '#111111',
-        backgroundColor: '#ffe082',
-        fontFamily: 'sans-serif',
-        fontSize: '18px',
-        padding: { x: 10, y: 6 },
-      },
-      depth: 1201,
-    });
   }
 
   private refreshSettingsText(): void {

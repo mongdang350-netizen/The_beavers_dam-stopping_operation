@@ -21,21 +21,29 @@ export class GameOverScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    this.createButton(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 10, '재시작', () => {
-      this.scene.start(SCENE_KEYS.GAME);
-    });
-
-    this.createButton(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 80, '메인 메뉴', () => {
-      this.scene.start(SCENE_KEYS.MENU);
-    });
-  }
-
-  private createButton(x: number, y: number, label: string, onClick: () => void): void {
     createTextButton(this, {
-      x,
-      y,
-      label,
-      onClick,
+      x: GAME_WIDTH / 2,
+      y: GAME_HEIGHT / 2 + 10,
+      label: '재시작',
+      onClick: () => {
+        this.scene.start(SCENE_KEYS.GAME);
+      },
+      style: {
+        color: '#111111',
+        backgroundColor: '#ffcc80',
+        fontFamily: 'sans-serif',
+        fontSize: '26px',
+        padding: { x: 12, y: 8 },
+      },
+    });
+
+    createTextButton(this, {
+      x: GAME_WIDTH / 2,
+      y: GAME_HEIGHT / 2 + 80,
+      label: '메인 메뉴',
+      onClick: () => {
+        this.scene.start(SCENE_KEYS.MENU);
+      },
       style: {
         color: '#111111',
         backgroundColor: '#ffcc80',
