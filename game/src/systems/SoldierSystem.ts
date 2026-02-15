@@ -90,6 +90,7 @@ export class SoldierSystem {
     if (signature === 'suit') {
       return new SoldierSquad(
         SUIT_SOLDIER_CONFIG,
+        signature,
         SUIT_SOLDIER_CONFIG.count,
         origin,
         origin,
@@ -99,12 +100,13 @@ export class SoldierSystem {
     if (signature === 'knight') {
       return new SoldierSquad(
         KNIGHT_SOLDIER_CONFIG,
+        signature,
         KNIGHT_SOLDIER_CONFIG.count,
         origin,
         origin,
       );
     }
-    return new SoldierSquad(BASE_SOLDIER_CONFIG, BASE_SOLDIER_CONFIG.count, origin, origin);
+    return new SoldierSquad(BASE_SOLDIER_CONFIG, signature, BASE_SOLDIER_CONFIG.count, origin, origin);
   }
 
   private getSignature(tower: Tower): SoldierSignature | null {

@@ -55,7 +55,8 @@ export class StageSystem {
       return;
     }
 
-    if (this.waveIndex < 2) {
+    const stage = this.getCurrentStage();
+    if (this.waveIndex < stage.waves.length - 1) {
       this.waveIndex += 1;
       this.gameState.currentWave = this.waveIndex + 1;
       this.waveSystem.reset();

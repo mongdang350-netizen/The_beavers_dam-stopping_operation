@@ -134,7 +134,7 @@ export class CombatSystem {
       type: special.effectType,
       duration: special.effectDuration ?? 0,
       value: special.effectValue ?? 0,
-      ignoresArmor: special.effectType === 'poison' || special.effectType === 'burn',
+      ignoresArmor: this.shouldIgnoreArmor(special.effectType),
     });
   }
 
@@ -151,6 +151,10 @@ export class CombatSystem {
       this.enemyPool?.release(enemy);
     }
     gameState.enemies = survivors;
+  }
+
+  private shouldIgnoreArmor(effectType: string): boolean {
+    return effectType === 'poison' || effectType === 'burn';
   }
 
   private toDirection(from: Position, to: Position): Position {
@@ -170,14 +174,13 @@ export class CombatSystem {
       attackType: tower.config.attackType,
       isAoe: tower.config.targetMode === 'aoe',
       aoeRadius: (tower.config.aoeRadius ?? 0) * RANGE_UNIT,
+      sourceType: tower.config.id,
       effect: tower.config.special?.effectType
         ? {
             type: tower.config.special.effectType,
             duration: tower.config.special.effectDuration ?? 0,
             value: tower.config.special.effectValue ?? 0,
-            ignoresArmor:
-              tower.config.special.effectType === 'poison' ||
-              tower.config.special.effectType === 'burn',
+            ignoresArmor: this.shouldIgnoreArmor(tower.config.special.effectType),
           }
         : undefined,
     });
