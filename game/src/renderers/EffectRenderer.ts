@@ -1,6 +1,6 @@
-import Phaser from 'phaser';
 import type { Enemy } from '@/entities/Enemy';
 import type { EffectType } from '@/types';
+import { BaseRenderer } from '@/renderers/BaseRenderer';
 
 const effectSymbolByType: Record<EffectType, string> = {
   stun: '*',
@@ -18,47 +18,33 @@ const effectColorByType: Record<EffectType, string> = {
   asDeBuff: '#b0bec5',
 };
 
-export class EffectRenderer {
-  private readonly icons = new Map<string, Phaser.GameObjects.Text>();
-
-  constructor(private readonly scene: Phaser.Scene) {}
-
+export class EffectRenderer extends BaseRenderer<string, Phaser.GameObjects.Text, Enemy> {
   sync(enemies: Enemy[]): void {
-    const active = new Set<string>();
-
-    enemies.forEach((enemy) => {
-      const effect = enemy.effects[0];
-      if (!effect) {
-        return;
-      }
-      active.add(enemy.id);
-      const icon = this.icons.get(enemy.id) ?? this.create(enemy.id);
-      icon.setPosition(enemy.position.x, enemy.position.y - 30);
-      icon.setText(effectSymbolByType[effect.type]);
-      icon.setColor(effectColorByType[effect.type]);
-    });
-
-    [...this.icons.keys()]
-      .filter((id) => !active.has(id))
-      .forEach((id) => {
-        this.icons.get(id)?.destroy();
-        this.icons.delete(id);
-      });
+    const withEffects = enemies.filter((enemy) => enemy.effects[0]);
+    super.sync(withEffects);
   }
 
-  destroy(): void {
-    this.icons.forEach((icon) => icon.destroy());
-    this.icons.clear();
+  protected getKey(enemy: Enemy): string {
+    return enemy.id;
   }
 
-  private create(enemyId: string): Phaser.GameObjects.Text {
-    const icon = this.scene.add
+  protected createVisual(_enemy: Enemy): Phaser.GameObjects.Text {
+    return this.scene.add
       .text(0, 0, '', {
         fontFamily: 'sans-serif',
         fontSize: '16px',
       })
       .setOrigin(0.5);
-    this.icons.set(enemyId, icon);
-    return icon;
+  }
+
+  protected updateVisual(icon: Phaser.GameObjects.Text, enemy: Enemy): void {
+    const effect = enemy.effects[0];
+    icon.setPosition(enemy.position.x, enemy.position.y - 30);
+    icon.setText(effectSymbolByType[effect.type]);
+    icon.setColor(effectColorByType[effect.type]);
+  }
+
+  protected destroyVisual(icon: Phaser.GameObjects.Text): void {
+    icon.destroy();
   }
 }

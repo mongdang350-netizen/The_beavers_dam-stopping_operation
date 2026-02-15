@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import type { Enemy } from '@/entities/Enemy';
 import { getEnemyColor } from '@/renderers/visualPolicy';
+import { BaseRenderer } from '@/renderers/BaseRenderer';
 
 interface EnemyVisual {
   container: Phaser.GameObjects.Container;
@@ -9,46 +10,12 @@ interface EnemyVisual {
   bossTween?: Phaser.Tweens.Tween;
 }
 
-export class EnemyRenderer {
-  private readonly visuals = new Map<string, EnemyVisual>();
-
-  constructor(private readonly scene: Phaser.Scene) {}
-
-  sync(enemies: Enemy[]): void {
-    const activeIds = new Set(enemies.map((enemy) => enemy.id));
-
-    enemies.forEach((enemy) => {
-      const existing = this.visuals.get(enemy.id) ?? this.createVisual(enemy);
-      existing.container.setPosition(enemy.position.x, enemy.position.y);
-
-      const hpRatio = enemy.maxHp <= 0 ? 0 : enemy.hp / enemy.maxHp;
-      const width = enemy.config.isBoss ? 48 : 24;
-      existing.hpBar.clear();
-      existing.hpBar.fillStyle(0x000000, 0.9);
-      existing.hpBar.fillRect(-width / 2, -22, width, 4);
-      existing.hpBar.fillStyle(0x00ff66, 1);
-      existing.hpBar.fillRect(-width / 2, -22, width * Math.max(0, hpRatio), 4);
-    });
-
-    [...this.visuals.keys()]
-      .filter((id) => !activeIds.has(id))
-      .forEach((id) => {
-        const visual = this.visuals.get(id);
-        visual?.bossTween?.remove();
-        visual?.container.destroy(true);
-        this.visuals.delete(id);
-      });
+export class EnemyRenderer extends BaseRenderer<string, EnemyVisual, Enemy> {
+  protected getKey(enemy: Enemy): string {
+    return enemy.id;
   }
 
-  destroy(): void {
-    this.visuals.forEach((visual) => {
-      visual.bossTween?.remove();
-      visual.container.destroy(true);
-    });
-    this.visuals.clear();
-  }
-
-  private createVisual(enemy: Enemy): EnemyVisual {
+  protected createVisual(enemy: Enemy): EnemyVisual {
     const radius = Math.max(8, 10 * enemy.config.sizeMultiplier);
     const body = this.scene.add.circle(0, 0, radius, getEnemyColor(enemy.config.id));
     let bossTween: Phaser.Tweens.Tween | undefined;
@@ -64,8 +31,23 @@ export class EnemyRenderer {
     const hpBar = this.scene.add.graphics();
     const container = this.scene.add.container(enemy.position.x, enemy.position.y, [body, hpBar]);
 
-    const visual = { container, body, hpBar, bossTween };
-    this.visuals.set(enemy.id, visual);
-    return visual;
+    return { container, body, hpBar, bossTween };
+  }
+
+  protected updateVisual(visual: EnemyVisual, enemy: Enemy): void {
+    visual.container.setPosition(enemy.position.x, enemy.position.y);
+
+    const hpRatio = enemy.maxHp <= 0 ? 0 : enemy.hp / enemy.maxHp;
+    const width = enemy.config.isBoss ? 48 : 24;
+    visual.hpBar.clear();
+    visual.hpBar.fillStyle(0x000000, 0.9);
+    visual.hpBar.fillRect(-width / 2, -22, width, 4);
+    visual.hpBar.fillStyle(0x00ff66, 1);
+    visual.hpBar.fillRect(-width / 2, -22, width * Math.max(0, hpRatio), 4);
+  }
+
+  protected destroyVisual(visual: EnemyVisual): void {
+    visual.bossTween?.remove();
+    visual.container.destroy(true);
   }
 }
