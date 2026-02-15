@@ -1,0 +1,280 @@
+[
+  {
+    "id": 1,
+    "waves": [
+      { "enemies": [{ "type": "piranha", "count": 25 }] },
+      { "enemies": [{ "type": "piranha", "count": 35 }] },
+      { "enemies": [{ "type": "piranha", "count": 50 }] }
+    ]
+  },
+  {
+    "id": 2,
+    "waves": [
+      {
+        "enemies": [
+          { "type": "piranha", "count": 30 },
+          { "type": "catfish", "count": 8 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 40 },
+          { "type": "catfish", "count": 12 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 50 },
+          { "type": "catfish", "count": 15 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "waves": [
+      {
+        "enemies": [
+          { "type": "piranha", "count": 35 },
+          { "type": "catfish", "count": 10 },
+          { "type": "iguana", "count": 6 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 40 },
+          { "type": "catfish", "count": 12 },
+          { "type": "iguana", "count": 10 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 50 },
+          { "type": "catfish", "count": 15 },
+          { "type": "iguana", "count": 12 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "bonusGold": 200,
+    "waves": [
+      {
+        "enemies": [
+          { "type": "piranha", "count": 40 },
+          { "type": "catfish", "count": 12 },
+          { "type": "iguana", "count": 8 },
+          { "type": "waterSnake", "count": 5 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 50 },
+          { "type": "catfish", "count": 15 },
+          { "type": "iguana", "count": 10 },
+          { "type": "waterSnake", "count": 8 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 60 },
+          { "type": "catfish", "count": 15 },
+          { "type": "iguana", "count": 12 },
+          { "type": "waterSnake", "count": 12 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "waves": [
+      {
+        "enemies": [
+          { "type": "piranha", "count": 60 },
+          { "type": "catfish", "count": 15 },
+          { "type": "iguana", "count": 10 },
+          { "type": "waterSnake", "count": 10 },
+          { "type": "turtle", "count": 4 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 70 },
+          { "type": "catfish", "count": 12 },
+          { "type": "waterSnake", "count": 12 },
+          { "type": "turtle", "count": 6 },
+          { "type": "iguana", "count": 8 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "anaconda", "count": 1 },
+          { "type": "piranha", "count": 80 },
+          { "type": "waterSnake", "count": 8 },
+          { "type": "catfish", "count": 10 },
+          { "type": "turtle", "count": 4 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "waves": [
+      {
+        "enemies": [
+          { "type": "piranha", "count": 70 },
+          { "type": "catfish", "count": 15 },
+          { "type": "iguana", "count": 10 },
+          { "type": "waterSnake", "count": 10 },
+          { "type": "turtle", "count": 8 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 80 },
+          { "type": "catfish", "count": 12 },
+          { "type": "turtle", "count": 10 },
+          { "type": "waterSnake", "count": 12 },
+          { "type": "iguana", "count": 10 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 100 },
+          { "type": "turtle", "count": 12 },
+          { "type": "waterSnake", "count": 12 },
+          { "type": "iguana", "count": 8 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "waves": [
+      {
+        "enemies": [
+          { "type": "piranha", "count": 80 },
+          { "type": "waterSnake", "count": 12 },
+          { "type": "turtle", "count": 10 },
+          { "type": "crocodile", "count": 4 },
+          { "type": "iguana", "count": 8 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 100 },
+          { "type": "turtle", "count": 10 },
+          { "type": "crocodile", "count": 8 },
+          { "type": "waterSnake", "count": 10 },
+          { "type": "catfish", "count": 15 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 100 },
+          { "type": "crocodile", "count": 10 },
+          { "type": "turtle", "count": 12 },
+          { "type": "waterSnake", "count": 12 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "waves": [
+      {
+        "enemies": [
+          { "type": "piranha", "count": 100 },
+          { "type": "turtle", "count": 10 },
+          { "type": "crocodile", "count": 8 },
+          { "type": "hippo", "count": 3 },
+          { "type": "waterSnake", "count": 12 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 100 },
+          { "type": "crocodile", "count": 10 },
+          { "type": "hippo", "count": 6 },
+          { "type": "turtle", "count": 10 },
+          { "type": "waterSnake", "count": 10 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 120 },
+          { "type": "crocodile", "count": 12 },
+          { "type": "hippo", "count": 8 },
+          { "type": "turtle", "count": 12 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "bonusGold": 400,
+    "waves": [
+      {
+        "enemies": [
+          { "type": "piranha", "count": 120 },
+          { "type": "crocodile", "count": 12 },
+          { "type": "hippo", "count": 8 },
+          { "type": "turtle", "count": 10 },
+          { "type": "waterSnake", "count": 15 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 150 },
+          { "type": "crocodile", "count": 15 },
+          { "type": "hippo", "count": 10 },
+          { "type": "turtle", "count": 12 },
+          { "type": "waterSnake", "count": 12 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 150 },
+          { "type": "crocodile", "count": 15 },
+          { "type": "hippo", "count": 12 },
+          { "type": "waterSnake", "count": 15 },
+          { "type": "iguana", "count": 10 }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "waves": [
+      {
+        "enemies": [
+          { "type": "piranha", "count": 150 },
+          { "type": "crocodile", "count": 15 },
+          { "type": "hippo", "count": 10 },
+          { "type": "turtle", "count": 12 },
+          { "type": "waterSnake", "count": 15 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "piranha", "count": 200 },
+          { "type": "crocodile", "count": 15 },
+          { "type": "hippo", "count": 12 },
+          { "type": "turtle", "count": 10 },
+          { "type": "waterSnake", "count": 12 }
+        ]
+      },
+      {
+        "enemies": [
+          { "type": "elephant", "count": 1 },
+          { "type": "piranha", "count": 200 },
+          { "type": "crocodile", "count": 10 },
+          { "type": "hippo", "count": 8 },
+          { "type": "waterSnake", "count": 10 },
+          { "type": "turtle", "count": 8 }
+        ]
+      }
+    ]
+  }
+]

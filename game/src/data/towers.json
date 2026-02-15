@@ -1,0 +1,141 @@
+[
+  {
+    "id": "archer",
+    "name": "궁수 비버",
+    "cost": 100,
+    "attackType": "physical",
+    "atk": 8,
+    "attackSpeed": 2,
+    "range": 5,
+    "targetMode": "single"
+  },
+  {
+    "id": "warrior",
+    "name": "전사 비버",
+    "cost": 110,
+    "attackType": "physical",
+    "atk": 5,
+    "attackSpeed": 1,
+    "range": 1.5,
+    "targetMode": "single",
+    "special": { "summonSoldiers": true }
+  },
+  {
+    "id": "mage",
+    "name": "마법사 비버",
+    "cost": 130,
+    "attackType": "magical",
+    "atk": 12,
+    "attackSpeed": 1,
+    "range": 3.5,
+    "targetMode": "aoe",
+    "maxTargets": 8,
+    "aoeRadius": 1.5
+  },
+  {
+    "id": "bomb",
+    "name": "폭탄 비버",
+    "cost": 140,
+    "attackType": "physical",
+    "atk": 20,
+    "attackSpeed": 0.5,
+    "range": 3.5,
+    "targetMode": "aoe",
+    "maxTargets": 12,
+    "aoeRadius": 2
+  },
+
+  {
+    "id": "blowgunner",
+    "name": "블로우건수",
+    "cost": 160,
+    "attackType": "physical",
+    "atk": 10,
+    "attackSpeed": 3,
+    "range": 5,
+    "targetMode": "single",
+    "special": { "effectType": "poison", "effectDuration": 5, "effectValue": 3 }
+  },
+  {
+    "id": "crossbowman",
+    "name": "쇠뇌수",
+    "cost": 150,
+    "attackType": "physical",
+    "atk": 13,
+    "attackSpeed": 1.5,
+    "range": 5.5,
+    "targetMode": "single"
+  },
+  {
+    "id": "knight",
+    "name": "기사 비버",
+    "cost": 150,
+    "attackType": "physical",
+    "atk": 9,
+    "attackSpeed": 1,
+    "range": 1.5,
+    "targetMode": "single",
+    "special": { "summonSoldiers": true }
+  },
+  {
+    "id": "suit",
+    "name": "슈트 비버",
+    "cost": 170,
+    "attackType": "physical",
+    "atk": 7,
+    "attackSpeed": 1,
+    "range": 1.5,
+    "targetMode": "single",
+    "special": {
+      "summonSoldiers": true,
+      "stunAura": { "cooldown": 5, "duration": 2, "radius": 1.5 }
+    }
+  },
+  {
+    "id": "fireMage",
+    "name": "화염마법사",
+    "cost": 160,
+    "attackType": "magical",
+    "atk": 15,
+    "attackSpeed": 1,
+    "range": 3.5,
+    "targetMode": "cone",
+    "coneAngle": 60,
+    "special": { "effectType": "burn", "effectDuration": 1, "effectValue": 15 }
+  },
+  {
+    "id": "iceMage",
+    "name": "얼음마법사",
+    "cost": 150,
+    "attackType": "magical",
+    "atk": 14,
+    "attackSpeed": 1.2,
+    "range": 3.5,
+    "targetMode": "aoe",
+    "maxTargets": 8,
+    "aoeRadius": 1.5,
+    "special": { "effectType": "slow", "effectDuration": 3, "effectValue": 0.3 }
+  },
+  {
+    "id": "logRoller",
+    "name": "통나무 타워",
+    "cost": 160,
+    "attackType": "physical",
+    "atk": 17,
+    "attackSpeed": 0.3333333333,
+    "range": 7,
+    "targetMode": "line"
+  },
+  {
+    "id": "mortar",
+    "name": "박격포 타워",
+    "cost": 160,
+    "attackType": "physical",
+    "atk": 25,
+    "attackSpeed": 0.7,
+    "range": 7,
+    "targetMode": "aoe",
+    "maxTargets": 10,
+    "aoeRadius": 2
+  }
+]
