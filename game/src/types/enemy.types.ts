@@ -33,5 +33,7 @@ export interface EnemyConfig {
   gold: number;
   isBoss: boolean;
   sizeMultiplier: number;
+  spawnInterval: number;
+  category: 'weak' | 'mid' | 'strong' | 'boss';
   special?: EnemySpecial;
 }

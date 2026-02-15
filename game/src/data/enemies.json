@@ -11,7 +11,9 @@
     "mdef": 0,
     "gold": 1,
     "isBoss": false,
-    "sizeMultiplier": 1
+    "sizeMultiplier": 1,
+    "spawnInterval": 0.3,
+    "category": "weak"
   },
   {
     "id": "catfish",
@@ -25,7 +27,9 @@
     "mdef": 0,
     "gold": 5,
     "isBoss": false,
-    "sizeMultiplier": 1
+    "sizeMultiplier": 1,
+    "spawnInterval": 0.3,
+    "category": "weak"
   },
   {
     "id": "iguana",
@@ -39,7 +43,9 @@
     "mdef": 0,
     "gold": 5,
     "isBoss": false,
-    "sizeMultiplier": 1
+    "sizeMultiplier": 1,
+    "spawnInterval": 0.5,
+    "category": "mid"
   },
   {
     "id": "waterSnake",
@@ -53,7 +59,9 @@
     "mdef": 0,
     "gold": 10,
     "isBoss": false,
-    "sizeMultiplier": 1
+    "sizeMultiplier": 1,
+    "spawnInterval": 0.5,
+    "category": "mid"
   },
   {
     "id": "turtle",
@@ -67,7 +75,9 @@
     "mdef": 0,
     "gold": 15,
     "isBoss": false,
-    "sizeMultiplier": 1
+    "sizeMultiplier": 1,
+    "spawnInterval": 1.5,
+    "category": "strong"
   },
   {
     "id": "anaconda",
@@ -82,7 +92,9 @@
     "gold": 30,
     "isBoss": true,
     "sizeMultiplier": 2,
-    "special": { "towerAttackSpeedDebuff": { "radius": 3, "value": 0.3 } }
+    "special": { "towerAttackSpeedDebuff": { "radius": 3, "value": 0.3 } },
+    "spawnInterval": 3,
+    "category": "boss"
   },
   {
     "id": "crocodile",
@@ -96,7 +108,9 @@
     "mdef": 0,
     "gold": 50,
     "isBoss": false,
-    "sizeMultiplier": 1
+    "sizeMultiplier": 1,
+    "spawnInterval": 1.5,
+    "category": "strong"
   },
   {
     "id": "hippo",
@@ -110,7 +124,9 @@
     "mdef": 3,
     "gold": 70,
     "isBoss": false,
-    "sizeMultiplier": 1
+    "sizeMultiplier": 1,
+    "spawnInterval": 1.5,
+    "category": "strong"
   },
   {
     "id": "elephant",
@@ -124,6 +140,8 @@
     "mdef": 8,
     "gold": 100,
     "isBoss": true,
-    "sizeMultiplier": 4
+    "sizeMultiplier": 4,
+    "spawnInterval": 3,
+    "category": "boss"
   }
 ]

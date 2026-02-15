@@ -76,6 +76,8 @@ export const enemyConfigSchema = z
     gold: z.number().int().nonnegative(),
     isBoss: z.boolean(),
     sizeMultiplier: z.number().positive(),
+    spawnInterval: z.number().positive(),
+    category: z.enum(['weak', 'mid', 'strong', 'boss']),
     special: z
       .object({
         towerAttackSpeedDebuff: z
