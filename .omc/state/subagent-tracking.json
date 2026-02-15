@@ -1,0 +1,15 @@
+{
+  "agents": [
+    {
+      "agent_id": "a929f77",
+      "agent_type": "oh-my-claudecode:git-master",
+      "started_at": "2026-02-15T04:34:11.540Z",
+      "parent_mode": "none",
+      "status": "running"
+    }
+  ],
+  "total_spawned": 1,
+  "total_completed": 0,
+  "total_failed": 0,
+  "last_updated": "2026-02-15T04:34:11.657Z"
+}
