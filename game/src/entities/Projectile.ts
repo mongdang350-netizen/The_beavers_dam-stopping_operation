@@ -12,6 +12,7 @@ export interface ProjectileInit {
   aoeRadius?: number;
   effect?: Effect;
   direction?: Position;
+  sourceType?: string;
 }
 
 export class Projectile {
@@ -26,6 +27,7 @@ export class Projectile {
   effect?: Effect;
   direction: Position;
   active: boolean;
+  sourceType: string;
 
   constructor(init: ProjectileInit) {
     this.origin = { ...init.origin };
@@ -39,6 +41,7 @@ export class Projectile {
     this.effect = init.effect ? { ...init.effect } : undefined;
     this.direction = init.direction ? normalize(init.direction) : { x: 0, y: 0 };
     this.active = true;
+    this.sourceType = init.sourceType ?? '';
   }
 
   update(dt: number): void {
@@ -96,5 +99,6 @@ export class Projectile {
     this.effect = init.effect ? { ...init.effect } : undefined;
     this.direction = init.direction ? normalize(init.direction) : { x: 0, y: 0 };
     this.active = true;
+    this.sourceType = init.sourceType ?? '';
   }
 }

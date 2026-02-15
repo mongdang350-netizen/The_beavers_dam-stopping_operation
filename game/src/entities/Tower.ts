@@ -16,6 +16,7 @@ export class Tower {
   totalCost: number;
   attackCooldown: number;
   lastAttackTime: number;
+  attackPhase: 'idle' | 'firing' | 'cooldown' = 'idle';
   private attackSpeedDebuff: number;
 
   constructor(config: TowerConfig, position: Position, slotIndex: number) {
@@ -27,6 +28,7 @@ export class Tower {
     this.attackCooldown = 0;
     this.lastAttackTime = Number.NEGATIVE_INFINITY;
     this.attackSpeedDebuff = 0;
+    this.attackPhase = 'idle';
   }
 
   findTarget(enemies: Enemy[]): Enemy | null {
@@ -82,6 +84,16 @@ export class Tower {
 
   recordAttack(currentTime: number): void {
     this.lastAttackTime = currentTime;
+    this.attackPhase = 'firing';
+  }
+
+  updatePhase(currentTime: number): void {
+    if (this.attackPhase === 'firing' && currentTime - this.lastAttackTime >= 0.15) {
+      this.attackPhase = 'cooldown';
+    }
+    if (this.attackPhase === 'cooldown' && this.canAttack(currentTime)) {
+      this.attackPhase = 'idle';
+    }
   }
 
   getEffectiveAttackSpeed(): number {
