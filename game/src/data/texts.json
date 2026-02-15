@@ -1,0 +1,14 @@
+{
+  "ko": {
+    "start": "시작",
+    "gameOver": "게임 오버",
+    "victory": "클리어",
+    "nextWave": "다음 Wave!",
+    "gold": "골드",
+    "stage": "스테이지",
+    "wave": "웨이브",
+    "dam": "댐",
+    "enemies": "적",
+    "pause": "일시정지"
+  }
+}
