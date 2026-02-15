@@ -41,5 +41,73 @@ describe('Projectile', () => {
     expect(two).toBe(one);
     expect(two.active).toBe(false);
   });
-});
 
+  it('stores sourceType when provided', () => {
+    const projectile = new Projectile({
+      origin: { x: 0, y: 0 },
+      target: null,
+      damage: 10,
+      attackType: 'physical',
+      sourceType: 'archer',
+    });
+    expect(projectile.sourceType).toBe('archer');
+  });
+
+  it('defaults sourceType to empty string when not provided', () => {
+    const projectile = new Projectile({
+      origin: { x: 0, y: 0 },
+      target: null,
+      damage: 10,
+      attackType: 'physical',
+    });
+    expect(projectile.sourceType).toBe('');
+  });
+
+  it('reset without init clears sourceType indirectly by deactivating', () => {
+    const projectile = new Projectile({
+      origin: { x: 0, y: 0 },
+      target: null,
+      damage: 10,
+      attackType: 'physical',
+      sourceType: 'mage',
+    });
+    projectile.reset();
+    expect(projectile.active).toBe(false);
+    expect(projectile.target).toBeNull();
+  });
+
+  it('reset with new init resets sourceType to new value', () => {
+    const projectile = new Projectile({
+      origin: { x: 0, y: 0 },
+      target: null,
+      damage: 10,
+      attackType: 'physical',
+      sourceType: 'mage',
+    });
+    projectile.reset({
+      origin: { x: 5, y: 5 },
+      target: null,
+      damage: 20,
+      attackType: 'magical',
+      sourceType: 'bomb',
+    });
+    expect(projectile.sourceType).toBe('bomb');
+  });
+
+  it('reset with new init defaults sourceType to empty string when omitted', () => {
+    const projectile = new Projectile({
+      origin: { x: 0, y: 0 },
+      target: null,
+      damage: 10,
+      attackType: 'physical',
+      sourceType: 'archer',
+    });
+    projectile.reset({
+      origin: { x: 5, y: 5 },
+      target: null,
+      damage: 20,
+      attackType: 'physical',
+    });
+    expect(projectile.sourceType).toBe('');
+  });
+});

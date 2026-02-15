@@ -82,5 +82,175 @@ describe('StageSystem', () => {
     expect(gameState.gameStatus).toBe('victory');
     expect(victory).toHaveBeenCalledTimes(1);
   });
-});
 
+  it('advances waves within a stage using dynamic waves.length', () => {
+    const { gameState, waveSystem, stageSystem } = createStageSystem();
+    stageSystem.start();
+    expect(gameState.currentStage).toBe(1);
+    expect(gameState.currentWave).toBe(1);
+
+    waveSystem.state = 'cleared';
+    stageSystem.check();
+    expect(gameState.currentWave).toBe(2);
+    expect(gameState.currentStage).toBe(1);
+
+    waveSystem.state = 'cleared';
+    stageSystem.check();
+    expect(gameState.currentWave).toBe(3);
+    expect(gameState.currentStage).toBe(1);
+  });
+
+  it('advances from stage 1 to stage 2 after all waves clear', () => {
+    const { gameState, waveSystem, stageSystem } = createStageSystem();
+    const stage1Waves = stagesData[0].waves.length;
+    stageSystem.start();
+
+    for (let i = 0; i < stage1Waves; i += 1) {
+      waveSystem.state = 'cleared';
+      stageSystem.check();
+    }
+
+    expect(gameState.currentStage).toBe(2);
+    expect(gameState.currentWave).toBe(1);
+  });
+
+  it('emits stageStart and stageEnd events', () => {
+    const { eventBus, waveSystem, stageSystem } = createStageSystem();
+    const stageStart = vi.fn();
+    const stageEnd = vi.fn();
+    eventBus.on('stageStart', stageStart);
+    eventBus.on('stageEnd', stageEnd);
+
+    stageSystem.start();
+    expect(stageStart).toHaveBeenCalledWith({ stageId: 1 });
+
+    const stage1Waves = stagesData[0].waves.length;
+    for (let i = 0; i < stage1Waves; i += 1) {
+      waveSystem.state = 'cleared';
+      stageSystem.check();
+    }
+
+    expect(stageEnd).toHaveBeenCalledWith({ stageId: 1 });
+    expect(stageStart).toHaveBeenCalledWith({ stageId: 2 });
+  });
+
+  it('does not proceed when wave is not cleared', () => {
+    const { gameState, waveSystem, stageSystem } = createStageSystem();
+    stageSystem.start();
+
+    waveSystem.state = 'spawning';
+    stageSystem.check();
+    expect(gameState.currentWave).toBe(1);
+    expect(gameState.currentStage).toBe(1);
+  });
+
+  it('does not proceed when gameStatus is gameOver', () => {
+    const { gameState, waveSystem, stageSystem } = createStageSystem();
+    stageSystem.start();
+    gameState.gameStatus = 'gameOver';
+
+    waveSystem.state = 'cleared';
+    stageSystem.check();
+    expect(gameState.currentWave).toBe(1);
+    expect(gameState.currentStage).toBe(1);
+  });
+
+  it('does not start twice', () => {
+    const { gameState, stageSystem } = createStageSystem();
+    const stageStart = vi.fn();
+
+    stageSystem.start();
+    stageSystem.start();
+    expect(gameState.currentStage).toBe(1);
+  });
+
+  it('check does nothing before start is called', () => {
+    const { gameState, waveSystem, stageSystem } = createStageSystem();
+    waveSystem.state = 'cleared';
+    stageSystem.check();
+    expect(gameState.currentWave).toBe(1);
+  });
+
+  it('startCurrentWave delegates to waveSystem', () => {
+    const { waveSystem, stageSystem } = createStageSystem();
+    stageSystem.start();
+
+    const result = stageSystem.startCurrentWave();
+    expect(result).toBe(true);
+    expect(waveSystem.state).toBe('spawning');
+  });
+
+  it('startCurrentWave returns false when wave already active', () => {
+    const { stageSystem } = createStageSystem();
+    stageSystem.start();
+
+    stageSystem.startCurrentWave();
+    const result = stageSystem.startCurrentWave();
+    expect(result).toBe(false);
+  });
+
+  it('uses stage.waves.length - 1 dynamically for wave advancement', () => {
+    const { gameState, waveSystem, stageSystem } = createStageSystem();
+    stageSystem.start();
+
+    const stage1 = stageSystem.getCurrentStage();
+    expect(stage1.waves.length).toBe(3);
+
+    waveSystem.state = 'cleared';
+    stageSystem.check();
+    waveSystem.state = 'cleared';
+    stageSystem.check();
+    expect(gameState.currentStage).toBe(1);
+    expect(gameState.currentWave).toBe(3);
+
+    waveSystem.state = 'cleared';
+    stageSystem.check();
+    expect(gameState.currentStage).toBe(2);
+  });
+
+  it('victory event includes score and stars', () => {
+    const { eventBus, gameState, waveSystem, stageSystem } = createStageSystem();
+    const victory = vi.fn();
+    eventBus.on('victory', victory);
+    stageSystem.start();
+    gameState.elapsedTime = 600;
+
+    for (let i = 0; i < 30; i += 1) {
+      waveSystem.state = 'cleared';
+      stageSystem.check();
+    }
+
+    expect(victory).toHaveBeenCalledTimes(1);
+    const payload = victory.mock.calls[0][0];
+    expect(payload).toHaveProperty('score');
+    expect(payload).toHaveProperty('stars');
+    expect(typeof payload.score).toBe('number');
+    expect(typeof payload.stars).toBe('number');
+  });
+
+  it('resets waveSystem when entering a new stage', () => {
+    const { waveSystem, stageSystem } = createStageSystem();
+    stageSystem.start();
+
+    const stage1Waves = stagesData[0].waves.length;
+    for (let i = 0; i < stage1Waves; i += 1) {
+      waveSystem.state = 'cleared';
+      stageSystem.check();
+    }
+
+    expect(waveSystem.state).toBe('preparing');
+  });
+
+  it('sets gameState status to preparing when entering a new stage', () => {
+    const { gameState, waveSystem, stageSystem } = createStageSystem();
+    stageSystem.start();
+
+    const stage1Waves = stagesData[0].waves.length;
+    for (let i = 0; i < stage1Waves; i += 1) {
+      waveSystem.state = 'cleared';
+      stageSystem.check();
+    }
+
+    expect(gameState.gameStatus).toBe('preparing');
+  });
+});

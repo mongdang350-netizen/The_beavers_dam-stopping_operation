@@ -110,5 +110,43 @@ describe('Tower + TowerFactory', () => {
     tower.setAttackSpeedDebuff(0.3);
     expect(tower.getEffectiveAttackSpeed()).toBe(1.7);
   });
-});
 
+  it('attackPhase initial value is idle', () => {
+    const tower = factory.createTower('archer', 0, pathSystem);
+    expect(tower.attackPhase).toBe('idle');
+  });
+
+  it('recordAttack sets attackPhase to firing', () => {
+    const tower = factory.createTower('archer', 0, pathSystem);
+    expect(tower.attackPhase).toBe('idle');
+    tower.recordAttack(1.0);
+    expect(tower.attackPhase).toBe('firing');
+  });
+
+  it('updatePhase transitions firing to cooldown after 0.15s', () => {
+    const tower = factory.createTower('archer', 0, pathSystem);
+    tower.recordAttack(0);
+    expect(tower.attackPhase).toBe('firing');
+
+    tower.updatePhase(0.1);
+    expect(tower.attackPhase).toBe('firing');
+
+    tower.updatePhase(0.15);
+    expect(tower.attackPhase).toBe('cooldown');
+  });
+
+  it('updatePhase transitions cooldown to idle when canAttack is true', () => {
+    const tower = factory.createTower('archer', 0, pathSystem);
+    tower.recordAttack(0);
+    expect(tower.attackPhase).toBe('firing');
+
+    tower.updatePhase(0.15);
+    expect(tower.attackPhase).toBe('cooldown');
+
+    tower.updatePhase(0.4);
+    expect(tower.attackPhase).toBe('cooldown');
+
+    tower.updatePhase(0.5);
+    expect(tower.attackPhase).toBe('idle');
+  });
+});
