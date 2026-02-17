@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { textsData } from '@/data/validatedData';
 import { buildHudSnapshot } from '@/ui/hudModel';
 import { DamHealthBar } from '@/ui/DamHealthBar';
+import { GAME_WIDTH } from '@/utils/constants';
 
 interface HudState {
   gold: number;
@@ -23,6 +24,7 @@ export class HUD {
   private readonly damHealthBar: DamHealthBar;
 
   constructor(scene: Phaser.Scene) {
+    scene.add.rectangle(GAME_WIDTH / 2, 24, GAME_WIDTH, 56, 0x3e2723, 0.7).setDepth(999);
     this.goldText = scene.add.text(16, 12, '', this.style()).setDepth(1000);
     this.stageWaveText = scene.add.text(500, 12, '', this.style()).setDepth(1000);
     this.damText = scene.add.text(1020, 12, '', this.style()).setDepth(1000);
@@ -63,11 +65,11 @@ export class HUD {
 
   private style(): Phaser.Types.GameObjects.Text.TextStyle {
     return {
-      color: '#ffffff',
-      fontFamily: 'sans-serif',
+      color: '#FFF8E7',
+      fontFamily: "'Fredoka One', sans-serif",
       fontSize: '20px',
-      stroke: '#000000',
-      strokeThickness: 4,
+      stroke: '#5D4037',
+      strokeThickness: 3,
     };
   }
 }
