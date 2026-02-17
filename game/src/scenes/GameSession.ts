@@ -17,7 +17,7 @@ import { TowerPlacementSystem } from '@/systems/TowerPlacementSystem';
 import { UpgradeSystem } from '@/systems/UpgradeSystem';
 import { WaveSystem } from '@/systems/WaveSystem';
 import type { GameEvents, TowerType, UpgradeType } from '@/types';
-import { INITIAL_DAM_HP, INITIAL_GOLD } from '@/utils/constants';
+import { INITIAL_GOLD } from '@/utils/constants';
 import { ObjectPool } from '@/utils/ObjectPool';
 
 export class GameSession {
@@ -134,34 +134,6 @@ export class GameSession {
     if (this.gameState.gameStatus === 'preparing' || this.gameState.gameStatus === 'playing') {
       this.pausedBefore = this.gameState.gameStatus;
       this.gameState.setStatus('paused');
-    }
-  }
-
-  killAllEnemies(): void {
-    this.gameState.enemies.forEach((enemy) => {
-      enemy.takeTrueDamage(enemy.hp);
-    });
-    this.gameState.enemies = [];
-  }
-
-  resetDamHp(): void {
-    this.gameState.damHp = INITIAL_DAM_HP;
-  }
-
-  addGold(amount: number): void {
-    this.goldManager.earn(amount);
-  }
-
-  clearCurrentWaveForDebug(): void {
-    this.killAllEnemies();
-    this.waveSystem.state = 'cleared';
-    this.stageSystem.check();
-  }
-
-  skipStageForDebug(): void {
-    const currentStage = this.gameState.currentStage;
-    for (let i = 0; i < 3 && this.gameState.currentStage === currentStage; i += 1) {
-      this.clearCurrentWaveForDebug();
     }
   }
 

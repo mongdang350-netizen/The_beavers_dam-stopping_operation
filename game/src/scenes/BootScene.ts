@@ -28,7 +28,7 @@ export class BootScene extends Phaser.Scene {
     });
   }
 
-  create(): void {
+  async create(): Promise<void> {
     this.add
       .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 60, 'Loading...', {
         color: '#ffffff',
@@ -36,6 +36,15 @@ export class BootScene extends Phaser.Scene {
         fontSize: '36px',
       })
       .setOrigin(0.5);
+
+    // Wait for fonts to load with 3-second timeout
+    const fontTimeout = new Promise<void>((resolve) =>
+      setTimeout(() => {
+        console.warn('Font loading timed out, using fallback');
+        resolve();
+      }, 3000),
+    );
+    await Promise.race([document.fonts.ready, fontTimeout]);
 
     this.time.delayedCall(80, () => {
       this.scene.start(SCENE_KEYS.MENU);

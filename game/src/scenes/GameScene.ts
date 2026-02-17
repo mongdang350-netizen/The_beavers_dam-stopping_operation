@@ -4,11 +4,14 @@ import { mapsData } from '@/data/validatedData';
 import { DebugController } from '@/debug/DebugController';
 import { DebugPanel } from '@/debug/DebugPanel';
 import { shouldShowDebugPanel } from '@/debug/debugVisibility';
+import { BackgroundRenderer } from '@/renderers/BackgroundRenderer';
+import { DamRenderer } from '@/renderers/DamRenderer';
 import { EnemyRenderer } from '@/renderers/EnemyRenderer';
 import { EffectRenderer } from '@/renderers/EffectRenderer';
 import { ProjectileRenderer } from '@/renderers/ProjectileRenderer';
 import { SoldierRenderer } from '@/renderers/SoldierRenderer';
 import { TowerRenderer } from '@/renderers/TowerRenderer';
+import { registerAllTextures } from '@/renderers/textureRegistration';
 import { visualPolicy } from '@/renderers/visualPolicy';
 import { GameSession } from '@/scenes/GameSession';
 import { buildGameSceneLayout } from '@/scenes/layout';
@@ -24,6 +27,8 @@ import { GAME_HEIGHT, GAME_WIDTH } from '@/utils/constants';
 
 export class GameScene extends Phaser.Scene {
   private session!: GameSession;
+  private backgroundRenderer!: BackgroundRenderer;
+  private damRenderer!: DamRenderer;
   private enemyRenderer!: EnemyRenderer;
   private towerRenderer!: TowerRenderer;
   private projectileRenderer!: ProjectileRenderer;
@@ -47,8 +52,22 @@ export class GameScene extends Phaser.Scene {
 
   create(): void {
     this.session = new GameSession();
+
+    // Register all pixel art textures and animations
+    registerAllTextures(this);
+
     const layout = buildGameSceneLayout(mapsData.defaultMap);
-    this.drawMap(layout.riverPath, layout.damPosition);
+
+    // Set background color
+    this.cameras.main.setBackgroundColor(visualPolicy.backgroundLandColor);
+
+    // Draw background tiles, river, and decorations
+    this.backgroundRenderer = new BackgroundRenderer(this);
+    this.backgroundRenderer.render(layout.riverPath, layout.damPosition);
+
+    // Create dam renderer
+    this.damRenderer = new DamRenderer(this, layout.damPosition);
+    this.damRenderer.create();
 
     this.towerRenderer = new TowerRenderer(this);
     this.enemyRenderer = new EnemyRenderer(this);
@@ -139,33 +158,31 @@ export class GameScene extends Phaser.Scene {
       this.session.update(dt);
     }
 
+    // Tick wave countdown even during preparing status
+    if (this.session.waveSystem.state === 'countdown') {
+      this.session.waveSystem.update(dt, this.session.gameState.currentStage, this.session.gameState.currentWave);
+      // Auto-start wave when countdown reaches zero
+      if (this.session.waveSystem.getCountdown() <= 0) {
+        this.session.startWave();
+      }
+    }
+
     this.waveStartButton.setVisible(this.session.gameState.gameStatus === 'preparing');
+    const waveState = this.session.waveSystem.state;
+    const countdown = this.session.waveSystem.getCountdown();
+    this.waveStartButton.update(waveState, countdown);
     this.syncRenderers();
     this.checkBossArrival();
-  }
-
-  private drawMap(path: { x: number; y: number }[], damPosition: { x: number; y: number }): void {
-    this.cameras.main.setBackgroundColor(visualPolicy.backgroundLandColor);
-
-    const river = this.add.graphics();
-    river.lineStyle(120, visualPolicy.riverColor, 1);
-    river.beginPath();
-    river.moveTo(path[0].x, path[0].y);
-    for (let i = 1; i < path.length; i += 1) {
-      river.lineTo(path[i].x, path[i].y);
-    }
-    river.strokePath();
-
-    this.add.rectangle(damPosition.x, damPosition.y, 170, 24, visualPolicy.damColor, 1).setDepth(50);
   }
 
   private syncRenderers(): void {
     const state = this.session.gameState;
     this.enemyRenderer.sync(state.enemies);
-    this.towerRenderer.sync(state.towers);
+    this.towerRenderer.sync([...state.towers.values()]);
     this.projectileRenderer.sync(state.projectiles);
     this.soldierRenderer.sync();
     this.effectRenderer.sync(state.enemies);
+    this.damRenderer.sync(state.damHp, state.damMaxHp);
     this.hud.refresh(
       {
         gold: state.gold,
@@ -209,6 +226,8 @@ export class GameScene extends Phaser.Scene {
   private cleanupScene(): void {
     audioManager.stopBgm();
     this.cleanup.disposeAll();
+    this.backgroundRenderer?.destroy();
+    this.damRenderer?.destroy();
     this.enemyRenderer?.destroy();
     this.towerRenderer?.destroy();
     this.projectileRenderer?.destroy();
