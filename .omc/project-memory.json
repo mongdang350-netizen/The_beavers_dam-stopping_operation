@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1771129289806,
-  "projectRoot": "C:\\beaver",
+  "lastScanned": 1771316401504,
+  "projectRoot": "/Users/hyeonjun/The_beavers_dam-stopping_operation",
   "techStack": {
     "languages": [],
     "frameworks": [],
@@ -27,18 +27,61 @@
     "mainDirectories": [
       "docs"
     ],
-    "gitBranches": null
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
   },
   "customNotes": [],
   "directoryMap": {
+    "archive": {
+      "path": "archive",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1771316401493,
+      "keyFiles": [
+        "plan.md",
+        "plan2.md",
+        "prompt.md"
+      ]
+    },
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 1,
-      "lastAccessed": 1771129289758,
+      "lastAccessed": 1771316401493,
       "keyFiles": [
         "IMPLEMENTATION_PLAN.md"
       ]
+    },
+    "game": {
+      "path": "game",
+      "purpose": null,
+      "fileCount": 9,
+      "lastAccessed": 1771316401493,
+      "keyFiles": [
+        "eslint.config.js",
+        "index.html",
+        "package-lock.json",
+        "package.json",
+        "tsconfig.json"
+      ]
+    },
+    "game/dist": {
+      "path": "game/dist",
+      "purpose": "Distribution/build output",
+      "fileCount": 1,
+      "lastAccessed": 1771316401495,
+      "keyFiles": [
+        "index.html"
+      ]
+    },
+    "game/node_modules": {
+      "path": "game/node_modules",
+      "purpose": "Dependencies",
+      "fileCount": 1,
+      "lastAccessed": 1771316401497,
+      "keyFiles": []
     }
   },
   "hotPaths": [],
