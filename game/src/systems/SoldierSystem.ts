@@ -23,7 +23,7 @@ const KNIGHT_SOLDIER_CONFIG: SoldierConfig = {
   respawnTime: 30,
 };
 
-const SUIT_SOLDIER_CONFIG: SoldierConfig = {
+const BARBARIAN_SOLDIER_CONFIG: SoldierConfig = {
   count: 1,
   hp: 150,
   atk: 7,
@@ -33,7 +33,7 @@ const SUIT_SOLDIER_CONFIG: SoldierConfig = {
   respawnTime: 30,
 };
 
-type SoldierSignature = 'warrior' | 'knight' | 'suit';
+type SoldierSignature = 'brave' | 'knight' | 'barbarian';
 
 interface ManagedSquad {
   squad: SoldierSquad;
@@ -87,11 +87,11 @@ export class SoldierSystem {
   }
 
   private createSquad(signature: SoldierSignature, origin: Position): SoldierSquad {
-    if (signature === 'suit') {
+    if (signature === 'barbarian') {
       return new SoldierSquad(
-        SUIT_SOLDIER_CONFIG,
+        BARBARIAN_SOLDIER_CONFIG,
         signature,
-        SUIT_SOLDIER_CONFIG.count,
+        BARBARIAN_SOLDIER_CONFIG.count,
         origin,
         origin,
         { cooldown: 5, duration: 2, radius: 1.5 },
@@ -113,12 +113,12 @@ export class SoldierSystem {
     if (!tower.config.special?.summonSoldiers) {
       return null;
     }
-    if (tower.config.id === 'suit') {
-      return 'suit';
+    if (tower.config.id === 'barbarian') {
+      return 'barbarian';
     }
     if (tower.config.id === 'knight') {
       return 'knight';
     }
-    return 'warrior';
+    return 'brave';
   }
 }

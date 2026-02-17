@@ -7,7 +7,7 @@ import { Projectile } from '@/entities/Projectile';
 import type { Tower } from '@/entities/Tower';
 import type { PathSystem } from '@/systems/PathSystem';
 import type { EffectSystem } from '@/systems/EffectSystem';
-import type { Effect, GameEvents, Position } from '@/types';
+import type { AttackType, GameEvents } from '@/types';
 import { ObjectPool } from '@/utils/ObjectPool';
 import { RANGE_UNIT } from '@/utils/constants';
 import { distance } from '@/utils/math';
@@ -35,7 +35,7 @@ export class CombatSystem {
     );
   }
 
-  update(dt: number, gameState: GameState, pathSystem: PathSystem): void {
+  update(dt: number, gameState: GameState, _pathSystem: PathSystem): void {
     this.currentTime += dt;
     const enemies = gameState.enemies.filter((enemy) => enemy.status !== 'dead');
 
@@ -47,41 +47,18 @@ export class CombatSystem {
         return;
       }
 
-      if (tower.config.id === 'fireMage') {
-        const direction = this.toDirection(tower.position, target.position);
-        const coneTargets = tower.findConeTargets(enemies, direction);
-        coneTargets.forEach((enemy) => {
-          this.applyDamage(tower.config.atk * dt, tower.config.attackType, enemy, true);
-          this.applyTowerEffect(tower.config.special, enemy);
-        });
-        return;
-      }
-
       if (!tower.canAttack(this.currentTime)) {
         return;
       }
 
       tower.recordAttack(this.currentTime);
-      if (tower.config.targetMode === 'line') {
-        this.spawnProjectile(gameState, tower, target);
-        const lineTargets = tower.findLineTargets(enemies, pathSystem);
-        lineTargets.forEach((enemy) => {
-          this.applyDamage(tower.config.atk, tower.config.attackType, enemy);
-          this.applyTowerEffect(tower.config.special, enemy);
-        });
-        return;
-      }
-
       this.spawnProjectile(gameState, tower, target);
     });
 
     this.updateProjectiles(dt, gameState, enemies);
 
-    enemies
-      .filter((enemy) => enemy.status === 'attackingDam')
-      .forEach((enemy) => {
-        gameState.damageDam(enemy.config.atk * enemy.getEffectiveAttackSpeed() * dt);
-      });
+    // Dam damage is handled by Enemy.update() via GameLoopManager callback
+    // Removed duplicate damage application here to fix bug
 
     this.handleEnemyDeaths(gameState);
   }
@@ -105,7 +82,7 @@ export class CombatSystem {
     }
   }
 
-  private applyDamage(amount: number, attackType: 'physical' | 'magical', enemy: Enemy, raw = false): void {
+  private applyDamage(amount: number, attackType: AttackType, enemy: Enemy, raw = false): void {
     if (enemy.status === 'dead') {
       return;
     }
@@ -121,21 +98,6 @@ export class CombatSystem {
       enemy.config.mdef,
     );
     enemy.takeTrueDamage(damage);
-  }
-
-  private applyTowerEffect(
-    special: { effectType?: Effect['type']; effectDuration?: number; effectValue?: number } | undefined,
-    enemy: Enemy | null,
-  ): void {
-    if (!special?.effectType || !enemy) {
-      return;
-    }
-    enemy.applyEffect({
-      type: special.effectType,
-      duration: special.effectDuration ?? 0,
-      value: special.effectValue ?? 0,
-      ignoresArmor: this.shouldIgnoreArmor(special.effectType),
-    });
   }
 
   private handleEnemyDeaths(gameState: GameState): void {
@@ -157,15 +119,7 @@ export class CombatSystem {
     return effectType === 'poison' || effectType === 'burn';
   }
 
-  private toDirection(from: Position, to: Position): Position {
-    return { x: to.x - from.x, y: to.y - from.y };
-  }
-
   private spawnProjectile(gameState: GameState, tower: Tower, target: Enemy): void {
-    if (tower.config.id === 'fireMage') {
-      return;
-    }
-
     const projectile = this.projectilePool.acquire();
     projectile.reset({
       origin: tower.position,

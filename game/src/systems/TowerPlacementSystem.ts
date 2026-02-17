@@ -8,7 +8,7 @@ import type { GameEvents, TowerType } from '@/types';
 
 const baseTowerCosts = new Map(
   towersData
-    .filter((tower) => ['archer', 'warrior', 'mage', 'bomb'].includes(tower.id))
+    .filter((tower) => tower.role === 'base')
     .map((tower) => [tower.id as TowerType, tower.cost]),
 );
 

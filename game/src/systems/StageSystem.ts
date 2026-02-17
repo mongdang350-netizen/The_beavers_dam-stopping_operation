@@ -29,12 +29,20 @@ export class StageSystem {
     return this.waveIndex;
   }
 
-  start(): void {
+  start(stageId?: number): void {
     if (this.started) {
       return;
     }
     this.started = true;
-    this.enterStage(0);
+    if (stageId !== undefined) {
+      const stageIndex = stageId - 1;
+      if (stageIndex < 0 || stageIndex >= this.stages.length) {
+        throw new Error(`Invalid stageId: ${stageId}. Must be between 1 and ${this.stages.length}`);
+      }
+      this.enterStage(stageIndex);
+    } else {
+      this.enterStage(0);
+    }
   }
 
   startCurrentWave(): boolean {
@@ -59,7 +67,7 @@ export class StageSystem {
     if (this.waveIndex < stage.waves.length - 1) {
       this.waveIndex += 1;
       this.gameState.currentWave = this.waveIndex + 1;
-      this.waveSystem.reset();
+      this.waveSystem.startCountdown();
       return;
     }
 
