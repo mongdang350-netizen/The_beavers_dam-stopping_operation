@@ -11,11 +11,11 @@ const effectSymbolByType: Record<EffectType, string> = {
 };
 
 const effectColorByType: Record<EffectType, string> = {
-  slow: '#64b5f6',
-  poison: '#81c784',
-  stun: '#ffcc80',
-  burn: '#ff8a65',
-  asDeBuff: '#b0bec5',
+  slow: '#87CEEB',
+  poison: '#A8D8A8',
+  stun: '#FFF3D6',
+  burn: '#D4A76A',
+  asDeBuff: '#C8C8C8',
 };
 
 export class EffectRenderer extends BaseRenderer<string, Phaser.GameObjects.Text, Enemy> {

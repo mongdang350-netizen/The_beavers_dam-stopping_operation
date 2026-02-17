@@ -1,53 +1,83 @@
-import Phaser from 'phaser';
 import type { Enemy } from '@/entities/Enemy';
-import { getEnemyColor } from '@/renderers/visualPolicy';
-import { BaseRenderer } from '@/renderers/BaseRenderer';
+import { AnimatedRenderer, type SpriteVisual } from '@/renderers/AnimatedRenderer';
+import { getSpriteSheetKey, getAnimationKey } from '@/assets/AssetDescriptor';
 
-interface EnemyVisual {
-  container: Phaser.GameObjects.Container;
-  body: Phaser.GameObjects.Arc;
-  hpBar: Phaser.GameObjects.Graphics;
-  bossTween?: Phaser.Tweens.Tween;
-}
+export class EnemyRenderer extends AnimatedRenderer<string, Enemy> {
+  private bossTweens = new Map<string, Phaser.Tweens.Tween>();
 
-export class EnemyRenderer extends BaseRenderer<string, EnemyVisual, Enemy> {
   protected getKey(enemy: Enemy): string {
     return enemy.id;
   }
 
-  protected createVisual(enemy: Enemy): EnemyVisual {
-    const radius = Math.max(8, 10 * enemy.config.sizeMultiplier);
-    const body = this.scene.add.circle(0, 0, radius, getEnemyColor(enemy.config.id));
-    let bossTween: Phaser.Tweens.Tween | undefined;
+  protected createVisual(enemy: Enemy): SpriteVisual {
+    this.ensureSpriteSheetsCreated();
+
+    const enemyType = enemy.config.id;
+    const sheetKey = getSpriteSheetKey('enemy', enemyType, 'walk');
+    const visual = this.createSpriteVisual(
+      enemy.position.x,
+      enemy.position.y,
+      sheetKey,
+    );
+
+    // Base scale for all enemies
+    visual.sprite.setScale(1.3);
+
+    // Scale boss enemies relative to base
     if (enemy.config.isBoss) {
-      bossTween = this.scene.tweens.add({
-        targets: body,
-        scale: 1.08,
+      const scale = enemy.config.sizeMultiplier * 1.3;
+      visual.sprite.setScale(scale);
+
+      // Boss pulse tween
+      const bossTween = this.scene.tweens.add({
+        targets: visual.sprite,
+        scaleX: scale * 1.08,
+        scaleY: scale * 1.08,
         yoyo: true,
         repeat: -1,
         duration: 450,
       });
+      this.bossTweens.set(enemy.id, bossTween);
     }
-    const hpBar = this.scene.add.graphics();
-    const container = this.scene.add.container(enemy.position.x, enemy.position.y, [body, hpBar]);
 
-    return { container, body, hpBar, bossTween };
+    // Add HP bar
+    this.addHpBar(visual);
+
+    // Play walk animation
+    const animKey = getAnimationKey('enemy', enemyType, 'walk');
+    this.playAnimation(visual.sprite, animKey);
+
+    return visual;
   }
 
-  protected updateVisual(visual: EnemyVisual, enemy: Enemy): void {
+  protected updateVisual(visual: SpriteVisual, enemy: Enemy): void {
+    // Update position
     visual.container.setPosition(enemy.position.x, enemy.position.y);
 
+    // Update depth for isometric ordering
+    visual.container.setDepth(enemy.position.y);
+
+    // Update HP bar
     const hpRatio = enemy.maxHp <= 0 ? 0 : enemy.hp / enemy.maxHp;
-    const width = enemy.config.isBoss ? 48 : 24;
-    visual.hpBar.clear();
-    visual.hpBar.fillStyle(0x000000, 0.9);
-    visual.hpBar.fillRect(-width / 2, -22, width, 4);
-    visual.hpBar.fillStyle(0x00ff66, 1);
-    visual.hpBar.fillRect(-width / 2, -22, width * Math.max(0, hpRatio), 4);
+    const barWidth = enemy.config.isBoss ? 48 : 24;
+    this.updateHpBar(visual, hpRatio, barWidth, -28);
   }
 
-  protected destroyVisual(visual: EnemyVisual): void {
-    visual.bossTween?.remove();
-    visual.container.destroy(true);
+  protected destroyVisual(visual: SpriteVisual): void {
+    // Find and remove boss tween if any
+    for (const [id, tween] of this.bossTweens) {
+      if (visual.sprite === tween.targets[0]) {
+        tween.remove();
+        this.bossTweens.delete(id);
+        break;
+      }
+    }
+    super.destroyVisual(visual);
+  }
+
+  destroy(): void {
+    this.bossTweens.forEach((tween) => tween.remove());
+    this.bossTweens.clear();
+    super.destroy();
   }
 }
