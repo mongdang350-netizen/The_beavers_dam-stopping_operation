@@ -8,31 +8,29 @@ describe('Tower + TowerFactory', () => {
   const factory = new TowerFactory();
 
   it('creates all base towers and upgrades with expected stats', () => {
-    const base = ['archer', 'warrior', 'mage', 'bomb'] as const;
+    const base = ['agile', 'brave', 'capable', 'smart'] as const;
     for (const type of base) {
       const tower = factory.createTower(type, 0, pathSystem);
       expect(tower.config.id).toBe(type);
     }
 
-    const archer = factory.createTower('archer', 1, pathSystem);
-    expect(factory.upgradeTower(archer, 'blowgunner').config.id).toBe('blowgunner');
-    const archer2 = factory.createTower('archer', 2, pathSystem);
-    expect(factory.upgradeTower(archer2, 'crossbowman').config.id).toBe('crossbowman');
+    const agile = factory.createTower('agile', 1, pathSystem);
+    expect(factory.upgradeTower(agile, 'blowgunner').config.id).toBe('blowgunner');
+    const agile2 = factory.createTower('agile', 2, pathSystem);
+    expect(factory.upgradeTower(agile2, 'archer').config.id).toBe('archer');
 
-    const warrior = factory.createTower('warrior', 3, pathSystem);
-    expect(factory.upgradeTower(warrior, 'knight').config.id).toBe('knight');
-    const warrior2 = factory.createTower('warrior', 4, pathSystem);
-    expect(factory.upgradeTower(warrior2, 'suit').config.id).toBe('suit');
+    const brave = factory.createTower('brave', 3, pathSystem);
+    expect(factory.upgradeTower(brave, 'knight').config.id).toBe('knight');
 
-    const mage = factory.createTower('mage', 5, pathSystem);
-    expect(factory.upgradeTower(mage, 'fireMage').config.id).toBe('fireMage');
+    const capable = factory.createTower('capable', 5, pathSystem);
+    expect(factory.upgradeTower(capable, 'dragonTamer').config.id).toBe('dragonTamer');
 
-    const bomb = factory.createTower('bomb', 0, pathSystem);
-    expect(factory.upgradeTower(bomb, 'mortar').config.id).toBe('mortar');
+    const smart = factory.createTower('smart', 0, pathSystem);
+    expect(factory.upgradeTower(smart, 'waterBomber').config.id).toBe('waterBomber');
   });
 
   it('selects first target by highest progress in range', () => {
-    const tower = factory.createTower('archer', 0, pathSystem);
+    const tower = factory.createTower('agile', 0, pathSystem);
     const piranha = new Enemy(enemiesData.find((enemy) => enemy.id === 'piranha')!);
     const catfish = new Enemy(enemiesData.find((enemy) => enemy.id === 'catfish')!);
     piranha.position = { x: tower.position.x + 10, y: tower.position.y + 10 };
@@ -45,7 +43,7 @@ describe('Tower + TowerFactory', () => {
   });
 
   it('ignores out of range enemies', () => {
-    const tower = factory.createTower('archer', 0, pathSystem);
+    const tower = factory.createTower('agile', 0, pathSystem);
     const enemy = new Enemy(enemiesData[0]);
     enemy.position = { x: tower.position.x + 1000, y: tower.position.y };
     enemy.progress = 0.9;
@@ -53,7 +51,7 @@ describe('Tower + TowerFactory', () => {
   });
 
   it('respects attack cooldown from attack speed', () => {
-    const tower = factory.createTower('archer', 0, pathSystem);
+    const tower = factory.createTower('agile', 0, pathSystem);
     expect(tower.canAttack(0)).toBe(true);
     tower.recordAttack(0);
     expect(tower.canAttack(0.49)).toBe(false);
@@ -61,7 +59,7 @@ describe('Tower + TowerFactory', () => {
   });
 
   it('selects aoe targets by radius and maxTargets', () => {
-    const tower = factory.createTower('mage', 0, pathSystem);
+    const tower = factory.createTower('smart', 0, pathSystem);
     const primary = new Enemy(enemiesData[0]);
     primary.position = { x: 500, y: 500 };
     primary.progress = 0.9;
@@ -77,54 +75,52 @@ describe('Tower + TowerFactory', () => {
     expect(targets).toContain(primary);
   });
 
-  it('finds cone targets for fire mage', () => {
-    const tower = factory.createTower('mage', 0, pathSystem);
-    factory.upgradeTower(tower, 'fireMage');
-    const inCone = new Enemy(enemiesData[0]);
-    inCone.position = { x: tower.position.x + 100, y: tower.position.y };
-    const outCone = new Enemy(enemiesData[0]);
-    outCone.position = { x: tower.position.x, y: tower.position.y + 100 };
+  it('finds aoe targets for dragonTamer', () => {
+    const tower = factory.createTower('capable', 0, pathSystem);
+    factory.upgradeTower(tower, 'dragonTamer');
+    const inRange = new Enemy(enemiesData[0]);
+    inRange.position = { x: tower.position.x + 10, y: tower.position.y };
+    inRange.progress = 0.5;
+    const outRange = new Enemy(enemiesData[0]);
+    outRange.position = { x: tower.position.x + 1000, y: tower.position.y };
 
-    const targets = tower.findConeTargets([inCone, outCone], { x: 1, y: 0 });
-    expect(targets).toContain(inCone);
-    expect(targets).not.toContain(outCone);
+    const target = tower.findTarget([inRange, outRange]);
+    expect(target).toBe(inRange);
   });
 
-  it('supports line-targeting tower and mortar long range', () => {
-    const logTower = factory.createTower('bomb', 0, pathSystem);
+  it('supports aoe-targeting smart tower upgrades', () => {
+    const logTower = factory.createTower('smart', 0, pathSystem);
     factory.upgradeTower(logTower, 'logRoller');
-    const enemy = new Enemy(enemiesData[0]);
-    enemy.position = pathSystem.getPositionAtProgress(0.5);
-    const targets = logTower.findLineTargets([enemy], pathSystem);
-    expect(targets).toContain(enemy);
+    expect(logTower.config.targetMode).toBe('aoe');
+    expect(logTower.config.range).toBe(7);
 
-    const mortar = factory.createTower('bomb', 1, pathSystem);
-    factory.upgradeTower(mortar, 'mortar');
-    expect(mortar.config.range).toBe(7);
-    expect(mortar.config.aoeRadius).toBe(2);
+    const waterBomber = factory.createTower('smart', 1, pathSystem);
+    factory.upgradeTower(waterBomber, 'waterBomber');
+    expect(waterBomber.config.range).toBe(7);
+    expect(waterBomber.config.aoeRadius).toBe(2);
   });
 
   it('applies anaconda attack speed debuff', () => {
-    const tower = factory.createTower('archer', 0, pathSystem);
+    const tower = factory.createTower('agile', 0, pathSystem);
     expect(tower.getEffectiveAttackSpeed()).toBe(2);
     tower.setAttackSpeedDebuff(0.3);
     expect(tower.getEffectiveAttackSpeed()).toBe(1.7);
   });
 
   it('attackPhase initial value is idle', () => {
-    const tower = factory.createTower('archer', 0, pathSystem);
+    const tower = factory.createTower('agile', 0, pathSystem);
     expect(tower.attackPhase).toBe('idle');
   });
 
   it('recordAttack sets attackPhase to firing', () => {
-    const tower = factory.createTower('archer', 0, pathSystem);
+    const tower = factory.createTower('agile', 0, pathSystem);
     expect(tower.attackPhase).toBe('idle');
     tower.recordAttack(1.0);
     expect(tower.attackPhase).toBe('firing');
   });
 
   it('updatePhase transitions firing to cooldown after 0.15s', () => {
-    const tower = factory.createTower('archer', 0, pathSystem);
+    const tower = factory.createTower('agile', 0, pathSystem);
     tower.recordAttack(0);
     expect(tower.attackPhase).toBe('firing');
 
@@ -136,7 +132,7 @@ describe('Tower + TowerFactory', () => {
   });
 
   it('updatePhase transitions cooldown to idle when canAttack is true', () => {
-    const tower = factory.createTower('archer', 0, pathSystem);
+    const tower = factory.createTower('agile', 0, pathSystem);
     tower.recordAttack(0);
     expect(tower.attackPhase).toBe('firing');
 

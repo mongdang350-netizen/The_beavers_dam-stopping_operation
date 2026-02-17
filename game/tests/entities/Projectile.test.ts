@@ -88,7 +88,7 @@ describe('Projectile', () => {
       origin: { x: 5, y: 5 },
       target: null,
       damage: 20,
-      attackType: 'magical',
+      attackType: 'magic',
       sourceType: 'bomb',
     });
     expect(projectile.sourceType).toBe('bomb');

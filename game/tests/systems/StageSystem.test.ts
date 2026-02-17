@@ -157,7 +157,6 @@ describe('StageSystem', () => {
 
   it('does not start twice', () => {
     const { gameState, stageSystem } = createStageSystem();
-    const stageStart = vi.fn();
 
     stageSystem.start();
     stageSystem.start();
@@ -252,5 +251,49 @@ describe('StageSystem', () => {
     }
 
     expect(gameState.gameStatus).toBe('preparing');
+  });
+
+  it('accepts optional stageId parameter to start at specific stage', () => {
+    const { gameState, stageSystem } = createStageSystem();
+
+    stageSystem.start(3);
+    expect(gameState.currentStage).toBe(3);
+    expect(gameState.currentWave).toBe(1);
+  });
+
+  it('throws error for invalid stageId (too low)', () => {
+    const { stageSystem } = createStageSystem();
+
+    expect(() => stageSystem.start(0)).toThrow('Invalid stageId: 0');
+  });
+
+  it('throws error for invalid stageId (too high)', () => {
+    const { stageSystem } = createStageSystem();
+
+    expect(() => stageSystem.start(11)).toThrow('Invalid stageId: 11');
+  });
+
+  it('starts countdown when wave is cleared and more waves remain', () => {
+    const { waveSystem, stageSystem } = createStageSystem();
+    stageSystem.start();
+
+    waveSystem.state = 'cleared';
+    stageSystem.check();
+
+    expect(waveSystem.state).toBe('countdown');
+    expect(waveSystem.getCountdown()).toBe(3.0);
+  });
+
+  it('does not start countdown when last wave of stage is cleared', () => {
+    const { waveSystem, stageSystem } = createStageSystem();
+    stageSystem.start();
+
+    const stage1Waves = stagesData[0].waves.length;
+    for (let i = 0; i < stage1Waves; i += 1) {
+      waveSystem.state = 'cleared';
+      stageSystem.check();
+    }
+
+    expect(waveSystem.state).toBe('preparing');
   });
 });

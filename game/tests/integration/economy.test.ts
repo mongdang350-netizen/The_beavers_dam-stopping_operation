@@ -24,9 +24,9 @@ describe('economy integration', () => {
     );
     const upgrade = new UpgradeSystem(gameState, goldManager, towerFactory, eventBus);
 
-    expect(placement.placeTower(0, 'archer')).toBe(true);
+    expect(placement.placeTower(0, 'agile')).toBe(true);
     goldManager.earn(200);
-    expect(upgrade.upgradeTower(0, 'crossbowman')).toBe(true);
+    expect(upgrade.upgradeTower(0, 'archer')).toBe(true);
     const refund = placement.sellTower(0);
 
     expect(refund).toBe(125);

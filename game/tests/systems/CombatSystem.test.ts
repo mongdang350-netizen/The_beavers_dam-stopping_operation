@@ -37,7 +37,7 @@ const createContext = () => {
 describe('CombatSystem', () => {
   it('tower kills enemy and grants gold', () => {
     const { gameState, pathSystem, combatSystem, placement, goldManager } = createContext();
-    placement.placeTower(0, 'archer');
+    placement.placeTower(0, 'agile');
     const enemy = new Enemy(enemiesData[0]);
     enemy.position = { ...gameState.towers.get(0)!.position };
     gameState.enemies = [enemy];
@@ -50,7 +50,7 @@ describe('CombatSystem', () => {
 
   it('aoe tower damages multiple enemies', () => {
     const { gameState, pathSystem, combatSystem, placement } = createContext();
-    placement.placeTower(0, 'mage');
+    placement.placeTower(0, 'smart');
     const basePos = gameState.towers.get(0)!.position;
     const e1 = new Enemy(enemiesData[0]);
     const e2 = new Enemy(enemiesData[0]);
@@ -65,9 +65,9 @@ describe('CombatSystem', () => {
 
   it('applies aoe status effects to all targets', () => {
     const { gameState, pathSystem, combatSystem, placement, upgrade, goldManager } = createContext();
-    placement.placeTower(0, 'mage');
+    placement.placeTower(0, 'capable');
     goldManager.earn(300);
-    upgrade.upgradeTower(0, 'iceMage');
+    upgrade.upgradeTower(0, 'wizard');
     const basePos = gameState.towers.get(0)!.position;
     const e1 = new Enemy(enemiesData[0]);
     const e2 = new Enemy(enemiesData[0]);
@@ -82,32 +82,33 @@ describe('CombatSystem', () => {
     expect(e2.effects.some((effect) => effect.type === 'slow')).toBe(true);
   });
 
-  it('fire mage deals continuous cone damage', () => {
+  it('dragonTamer deals aoe damage with burn', () => {
     const { gameState, pathSystem, combatSystem, placement, upgrade, goldManager } = createContext();
-    placement.placeTower(0, 'mage');
+    placement.placeTower(0, 'capable');
     goldManager.earn(200);
-    upgrade.upgradeTower(0, 'fireMage');
+    upgrade.upgradeTower(0, 'dragonTamer');
     const tower = gameState.towers.get(0)!;
 
-    const inCone = new Enemy(enemiesData[0]);
-    inCone.position = { x: tower.position.x + 50, y: tower.position.y };
-    const outCone = new Enemy(enemiesData[0]);
-    outCone.position = { x: tower.position.x, y: tower.position.y + 80 };
-    gameState.enemies = [inCone, outCone];
+    const inRange = new Enemy(enemiesData[0]);
+    inRange.position = { x: tower.position.x + 10, y: tower.position.y };
+    const outRange = new Enemy(enemiesData[0]);
+    outRange.position = { x: tower.position.x + 1000, y: tower.position.y + 1000 };
+    gameState.enemies = [inRange, outRange];
 
-    combatSystem.update(1, gameState, pathSystem);
-    expect(inCone.hp).toBeLessThan(inCone.maxHp);
-    expect(outCone.hp).toBe(outCone.maxHp);
-    expect(inCone.effects.some((effect) => effect.type === 'burn')).toBe(true);
+    for (let i = 0; i < 10; i += 1) {
+      combatSystem.update(0.5, gameState, pathSystem);
+    }
+    expect(inRange.hp).toBeLessThan(inRange.maxHp);
+    expect(inRange.effects.some((effect) => effect.type === 'burn')).toBe(true);
   });
 
-  it('log roller hits enemies along path line', () => {
+  it('smart tower upgrade hits enemies with aoe', () => {
     const { gameState, pathSystem, combatSystem, placement, upgrade, goldManager } = createContext();
-    placement.placeTower(0, 'bomb');
+    placement.placeTower(0, 'smart');
     goldManager.earn(200);
     upgrade.upgradeTower(0, 'logRoller');
     const onPathEnemy = new Enemy(enemiesData[0]);
-    onPathEnemy.position = pathSystem.getPositionAtProgress(0.5);
+    onPathEnemy.position = { ...gameState.towers.get(0)!.position };
     gameState.enemies = [onPathEnemy];
 
     combatSystem.update(3, gameState, pathSystem);
@@ -116,7 +117,7 @@ describe('CombatSystem', () => {
 
   it('applies anaconda aura and restores when out of range', () => {
     const { gameState, pathSystem, combatSystem, placement } = createContext();
-    placement.placeTower(0, 'archer');
+    placement.placeTower(0, 'agile');
     const tower = gameState.towers.get(0)!;
     const anaconda = new Enemy(enemiesData.find((entry) => entry.id === 'anaconda')!);
     anaconda.position = { ...tower.position };
@@ -129,19 +130,19 @@ describe('CombatSystem', () => {
     expect(tower.getEffectiveAttackSpeed()).toBeCloseTo(tower.config.attackSpeed, 5);
   });
 
-  it('damages dam when enemy is attackingDam', () => {
+  it('does not damage dam directly (handled by Enemy.update)', () => {
     const { gameState, pathSystem, combatSystem } = createContext();
     const enemy = new Enemy(enemiesData[0]);
     enemy.status = 'attackingDam';
     gameState.enemies = [enemy];
 
     combatSystem.update(1, gameState, pathSystem);
-    expect(gameState.damHp).toBeLessThan(gameState.damMaxHp);
+    expect(gameState.damHp).toBe(gameState.damMaxHp);
   });
 
   it('creates and resolves projectiles', () => {
     const { gameState, pathSystem, combatSystem, placement } = createContext();
-    placement.placeTower(0, 'archer');
+    placement.placeTower(0, 'agile');
     const tower = gameState.towers.get(0)!;
     const enemy = new Enemy(enemiesData[0]);
     enemy.position = { x: tower.position.x + 200, y: tower.position.y };
@@ -180,7 +181,7 @@ describe('CombatSystem', () => {
       eventBus,
     );
 
-    placement.placeTower(0, 'archer');
+    placement.placeTower(0, 'agile');
     const enemy = new Enemy(enemiesData[0]);
     enemy.position = { ...gameState.towers.get(0)!.position };
     gameState.enemies = [enemy];

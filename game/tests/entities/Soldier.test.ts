@@ -16,14 +16,14 @@ describe('Soldier', () => {
   it('creates correct soldier counts for warrior and suit', () => {
     const warriorSquad = new SoldierSquad(
       soldierConfig,
-      'warrior',
+      'brave',
       3,
       { x: 0, y: 0 },
       { x: 64, y: 0 },
     );
     const suitSquad = new SoldierSquad(
       { ...soldierConfig, hp: 150, atk: 7, def: 40, mdef: 20 },
-      'suit',
+      'barbarian',
       1,
       { x: 0, y: 0 },
       { x: 64, y: 0 },
@@ -34,7 +34,7 @@ describe('Soldier', () => {
   });
 
   it('moves soldiers to new rally point', () => {
-    const squad = new SoldierSquad(soldierConfig, 'warrior', 1, { x: 0, y: 0 }, { x: 10, y: 0 });
+    const squad = new SoldierSquad(soldierConfig, 'brave', 1, { x: 0, y: 0 }, { x: 10, y: 0 });
     squad.update(1, []);
     squad.setRallyPoint({ x: 100, y: 0 });
     squad.update(1, []);
@@ -42,7 +42,7 @@ describe('Soldier', () => {
   });
 
   it('blocks approaching enemies and engages 1:1', () => {
-    const squad = new SoldierSquad(soldierConfig, 'warrior', 3, { x: 0, y: 0 }, { x: 64, y: 0 });
+    const squad = new SoldierSquad(soldierConfig, 'brave', 3, { x: 0, y: 0 }, { x: 64, y: 0 });
     squad.update(1, []);
     const enemies = Array.from({ length: 4 }).map(() => {
       const enemy = new Enemy(enemiesData[0]);
@@ -58,7 +58,7 @@ describe('Soldier', () => {
 
   it('releases enemy when soldier dies and respawns after timer', () => {
     const weakSoldierConfig = { ...soldierConfig, hp: 10, def: 0, mdef: 0 };
-    const squad = new SoldierSquad(weakSoldierConfig, 'warrior', 1, { x: 0, y: 0 }, { x: 64, y: 0 });
+    const squad = new SoldierSquad(weakSoldierConfig, 'brave', 1, { x: 0, y: 0 }, { x: 64, y: 0 });
     const strongEnemy = new Enemy(enemiesData.find((enemy) => enemy.id === 'crocodile')!);
     strongEnemy.position = { x: 64, y: 0 };
 
@@ -76,7 +76,7 @@ describe('Soldier', () => {
     const suitConfig = { ...soldierConfig, hp: 150, atk: 7, def: 40, mdef: 20 };
     const squad = new SoldierSquad(
       suitConfig,
-      'suit',
+      'barbarian',
       1,
       { x: 0, y: 0 },
       { x: 64, y: 0 },
@@ -93,11 +93,11 @@ describe('Soldier', () => {
   it('warrior type is properly set', () => {
     const soldier = new Soldier(
       soldierConfig,
-      'warrior',
+      'brave',
       { x: 0, y: 0 },
       { x: 64, y: 0 },
     );
-    expect(soldier.type).toBe('warrior');
+    expect(soldier.type).toBe('brave');
   });
 
   it('knight type is properly set', () => {
@@ -113,11 +113,11 @@ describe('Soldier', () => {
   it('suit type is properly set', () => {
     const soldier = new Soldier(
       { ...soldierConfig, hp: 150, atk: 7, def: 40, mdef: 20 },
-      'suit',
+      'barbarian',
       { x: 0, y: 0 },
       { x: 64, y: 0 },
     );
-    expect(soldier.type).toBe('suit');
+    expect(soldier.type).toBe('barbarian');
   });
 
   it('squad soldiers all share the same type', () => {

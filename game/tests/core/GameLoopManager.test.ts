@@ -77,7 +77,7 @@ describe('GameLoopManager', () => {
       pathSystem,
       eventBus,
     );
-    placement.placeTower(0, 'warrior');
+    placement.placeTower(0, 'brave');
     const soldierSystem = new SoldierSystem(gameState);
     const effectSystem = new EffectSystem();
     const combatSystem = new CombatSystem(new DamageCalculator(), effectSystem, eventBus, goldManager);

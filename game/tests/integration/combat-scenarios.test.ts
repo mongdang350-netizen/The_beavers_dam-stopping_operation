@@ -28,10 +28,10 @@ describe('combat scenarios integration', () => {
       goldManager,
     );
 
-    placement.placeTower(0, 'archer');
-    placement.placeTower(1, 'mage');
+    placement.placeTower(0, 'agile');
+    placement.placeTower(1, 'capable');
     upgrade.upgradeTower(0, 'blowgunner');
-    upgrade.upgradeTower(1, 'iceMage');
+    upgrade.upgradeTower(1, 'wizard');
 
     const enemies = ['piranha', 'catfish', 'turtle', 'anaconda'].map((type, index) => {
       const enemy = new Enemy(enemiesData.find((entry) => entry.id === type)!);

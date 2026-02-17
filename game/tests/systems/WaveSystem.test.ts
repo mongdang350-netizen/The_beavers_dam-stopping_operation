@@ -209,4 +209,81 @@ describe('WaveSystem', () => {
 
     expect(gameState.enemies.length).toBeGreaterThan(0);
   });
+
+  it('enters countdown state when startCountdown is called on cleared wave', () => {
+    const { gameState, waveSystem } = createWaveContext();
+
+    waveSystem.startNextWave(1, 1, { enemies: [{ type: 'piranha', count: 1 }] });
+    waveSystem.update(1, 1, 1);
+    gameState.enemies = [];
+    waveSystem.update(0, 1, 1);
+    expect(waveSystem.state).toBe('cleared');
+
+    waveSystem.startCountdown();
+    expect(waveSystem.state).toBe('countdown');
+    expect(waveSystem.getCountdown()).toBe(3.0);
+  });
+
+  it('countdown decrements and stays at countdown when timer reaches zero', () => {
+    const { gameState, waveSystem } = createWaveContext();
+
+    waveSystem.startNextWave(1, 1, { enemies: [{ type: 'piranha', count: 1 }] });
+    waveSystem.update(1, 1, 1);
+    gameState.enemies = [];
+    waveSystem.update(0, 1, 1);
+    waveSystem.startCountdown();
+
+    expect(waveSystem.state).toBe('countdown');
+    expect(waveSystem.getCountdown()).toBe(3.0);
+
+    waveSystem.update(1.5, 1, 1);
+    expect(waveSystem.state).toBe('countdown');
+    expect(waveSystem.getCountdown()).toBe(1.5);
+
+    waveSystem.update(1.6, 1, 1);
+    expect(waveSystem.state).toBe('countdown');
+    expect(waveSystem.getCountdown()).toBe(0);
+  });
+
+  it('allows startNextWave from countdown state', () => {
+    const { gameState, waveSystem } = createWaveContext();
+
+    waveSystem.startNextWave(1, 1, { enemies: [{ type: 'piranha', count: 1 }] });
+    waveSystem.update(1, 1, 1);
+    gameState.enemies = [];
+    waveSystem.update(0, 1, 1);
+    waveSystem.startCountdown();
+    expect(waveSystem.state).toBe('countdown');
+
+    const result = waveSystem.startNextWave(1, 2, { enemies: [{ type: 'piranha', count: 1 }] });
+    expect(result).toBe(true);
+    expect(waveSystem.state).toBe('spawning');
+  });
+
+  it('resets countdown timer on reset', () => {
+    const { gameState, waveSystem } = createWaveContext();
+
+    waveSystem.startNextWave(1, 1, { enemies: [{ type: 'piranha', count: 1 }] });
+    waveSystem.update(1, 1, 1);
+    gameState.enemies = [];
+    waveSystem.update(0, 1, 1);
+    waveSystem.startCountdown();
+
+    waveSystem.reset();
+    expect(waveSystem.state).toBe('preparing');
+    expect(waveSystem.getCountdown()).toBe(0);
+  });
+
+  it('countdown returns empty array during countdown state', () => {
+    const { gameState, waveSystem } = createWaveContext();
+
+    waveSystem.startNextWave(1, 1, { enemies: [{ type: 'piranha', count: 1 }] });
+    waveSystem.update(1, 1, 1);
+    gameState.enemies = [];
+    waveSystem.update(0, 1, 1);
+    waveSystem.startCountdown();
+
+    const result = waveSystem.update(1, 1, 1);
+    expect(result).toEqual([]);
+  });
 });

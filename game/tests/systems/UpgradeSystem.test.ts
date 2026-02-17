@@ -28,27 +28,27 @@ const createContext = () => {
 describe('UpgradeSystem', () => {
   it('upgrades tower and consumes gold', () => {
     const { goldManager, gameState, placement, upgrade } = createContext();
-    placement.placeTower(0, 'archer');
+    placement.placeTower(0, 'agile');
     goldManager.earn(200);
 
-    expect(upgrade.upgradeTower(0, 'crossbowman')).toBe(true);
-    expect(gameState.towers.get(0)?.config.id).toBe('crossbowman');
+    expect(upgrade.upgradeTower(0, 'archer')).toBe(true);
+    expect(gameState.towers.get(0)?.config.id).toBe('archer');
     expect(goldManager.getBalance()).toBe(320 - 150);
   });
 
   it('does not allow second upgrade on already upgraded tower', () => {
     const { goldManager, placement, upgrade } = createContext();
-    placement.placeTower(0, 'archer');
+    placement.placeTower(0, 'agile');
     goldManager.earn(200);
     upgrade.upgradeTower(0, 'blowgunner');
-    expect(upgrade.upgradeTower(0, 'crossbowman')).toBe(false);
+    expect(upgrade.upgradeTower(0, 'archer')).toBe(false);
   });
 
   it('returns no upgrades for empty or upgraded slots', () => {
     const { goldManager, placement, upgrade } = createContext();
     expect(upgrade.getAvailableUpgrades(0)).toEqual([]);
-    placement.placeTower(0, 'archer');
-    expect(upgrade.getAvailableUpgrades(0)).toEqual(['blowgunner', 'crossbowman']);
+    placement.placeTower(0, 'agile');
+    expect(upgrade.getAvailableUpgrades(0)).toEqual(['archer', 'blowgunner']);
     goldManager.earn(200);
     upgrade.upgradeTower(0, 'blowgunner');
     expect(upgrade.getAvailableUpgrades(0)).toEqual([]);
@@ -56,7 +56,7 @@ describe('UpgradeSystem', () => {
 
   it('refunds base+upgrade cost on sale', () => {
     const { goldManager, placement, upgrade } = createContext();
-    placement.placeTower(0, 'archer');
+    placement.placeTower(0, 'agile');
     goldManager.earn(200);
     upgrade.upgradeTower(0, 'blowgunner');
     const refund = placement.sellTower(0);

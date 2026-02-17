@@ -29,29 +29,29 @@ describe('TowerPlacementSystem', () => {
     const listener = vi.fn();
     eventBus.on('towerPlaced', listener);
 
-    expect(placement.placeTower(0, 'archer')).toBe(true);
+    expect(placement.placeTower(0, 'agile')).toBe(true);
     expect(gameState.towers.has(0)).toBe(true);
     expect(goldManager.getBalance()).toBe(120);
-    expect(listener).toHaveBeenCalledWith({ slotIndex: 0, towerType: 'archer' });
+    expect(listener).toHaveBeenCalledWith({ slotIndex: 0, towerType: 'agile' });
   });
 
   it('fails if slot is already occupied', () => {
     const { placement } = createContext();
-    expect(placement.placeTower(0, 'archer')).toBe(true);
-    expect(placement.placeTower(0, 'bomb')).toBe(false);
+    expect(placement.placeTower(0, 'agile')).toBe(true);
+    expect(placement.placeTower(0, 'smart')).toBe(false);
   });
 
   it('fails when gold is insufficient', () => {
     const { goldManager, placement } = createContext();
     goldManager.spend(200);
-    expect(placement.placeTower(0, 'mage')).toBe(false);
+    expect(placement.placeTower(0, 'capable')).toBe(false);
   });
 
   it('sells tower with 50% refund and emits event', () => {
     const { eventBus, goldManager, gameState, placement } = createContext();
     const sold = vi.fn();
     eventBus.on('towerSold', sold);
-    placement.placeTower(0, 'archer');
+    placement.placeTower(0, 'agile');
 
     const refund = placement.sellTower(0);
     expect(refund).toBe(50);
@@ -64,8 +64,7 @@ describe('TowerPlacementSystem', () => {
     const { goldManager, placement } = createContext();
     goldManager.spend(90);
     const affordable = placement.getAffordableTowers();
-    expect(affordable).toContain('archer');
-    expect(affordable).not.toContain('bomb');
+    expect(affordable).toContain('agile');
+    expect(affordable).not.toContain('smart');
   });
 });
-

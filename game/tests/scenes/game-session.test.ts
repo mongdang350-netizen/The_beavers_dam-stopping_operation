@@ -15,8 +15,8 @@ describe('GameSession', () => {
   it('supports placement, speed toggle and pause toggle inputs', () => {
     const session = new GameSession();
 
-    expect(session.placeTower(0, 'archer')).toBe(true);
-    expect(session.placeTower(0, 'mage')).toBe(false);
+    expect(session.placeTower(0, 'agile')).toBe(true);
+    expect(session.placeTower(0, 'capable')).toBe(false);
 
     expect(session.gameState.speed).toBe(1);
     session.toggleSpeed();

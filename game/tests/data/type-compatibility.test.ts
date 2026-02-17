@@ -4,7 +4,7 @@ describe('type compatibility', () => {
   it('provides strongly typed tower data from schema parser', () => {
     const ids = towersData.map((tower) => tower.id);
     expect(ids).toContain('archer');
-    expect(ids).toContain('mortar');
+    expect(ids).toContain('waterBomber');
   });
 
   it('provides strongly typed enemy data from schema parser', () => {

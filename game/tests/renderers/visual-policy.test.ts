@@ -9,6 +9,6 @@ describe('visualPolicy', () => {
 
   it('maps enemy and tower ids to deterministic placeholder colors', () => {
     expect(getEnemyColor('piranha')).not.toBe(getEnemyColor('elephant'));
-    expect(getTowerColor('archer')).not.toBe(getTowerColor('bomb'));
+    expect(getTowerColor('agile')).not.toBe(getTowerColor('smart'));
   });
 });
