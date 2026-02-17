@@ -6,21 +6,21 @@ import type { TowerConfig, TowerType, UpgradeType } from '@/types';
 const towerById = new Map(towersData.map((tower) => [tower.id, tower]));
 
 const upgradeTree: Record<TowerType, UpgradeType[]> = {
-  archer: ['blowgunner', 'crossbowman'],
-  warrior: ['knight', 'suit'],
-  mage: ['fireMage', 'iceMage'],
-  bomb: ['logRoller', 'mortar'],
+  agile: ['archer', 'blowgunner'],
+  brave: ['knight', 'barbarian'],
+  capable: ['dragonTamer', 'wizard'],
+  smart: ['logRoller', 'waterBomber'],
 };
 
 const baseTowerTypeByUpgrade: Record<UpgradeType, TowerType> = {
-  blowgunner: 'archer',
-  crossbowman: 'archer',
-  knight: 'warrior',
-  suit: 'warrior',
-  fireMage: 'mage',
-  iceMage: 'mage',
-  logRoller: 'bomb',
-  mortar: 'bomb',
+  archer: 'agile',
+  blowgunner: 'agile',
+  knight: 'brave',
+  barbarian: 'brave',
+  dragonTamer: 'capable',
+  wizard: 'capable',
+  logRoller: 'smart',
+  waterBomber: 'smart',
 };
 
 export class TowerFactory {

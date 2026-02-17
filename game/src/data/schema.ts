@@ -1,21 +1,22 @@
 import { z } from 'zod';
 
-const attackTypeSchema = z.enum(['physical', 'magical']);
-const targetModeSchema = z.enum(['single', 'aoe', 'cone', 'line']);
+const towerFamilySchema = z.enum(['agile', 'brave', 'capable', 'smart']);
+const attackTypeSchema = z.enum(['physical', 'magic', 'summon', 'production', 'aoe']);
+const targetModeSchema = z.enum(['single', 'aoe', 'none']);
 const effectTypeSchema = z.enum(['poison', 'slow', 'stun', 'burn', 'asDeBuff']);
 const towerIdSchema = z.enum([
+  'agile',
+  'brave',
+  'barbarian',
+  'capable',
+  'smart',
   'archer',
-  'warrior',
-  'mage',
-  'bomb',
   'blowgunner',
-  'crossbowman',
   'knight',
-  'suit',
-  'fireMage',
-  'iceMage',
+  'dragonTamer',
+  'wizard',
   'logRoller',
-  'mortar',
+  'waterBomber',
 ]);
 const enemyTypeSchema = z.enum([
   'piranha',
@@ -41,6 +42,8 @@ const towerSpecialSchema = z
     effectDuration: z.number().positive().optional(),
     effectValue: z.number().optional(),
     summonSoldiers: z.boolean().optional(),
+    goldPerInterval: z.number().positive().optional(),
+    goldInterval: z.number().positive().optional(),
     stunAura: stunAuraSchema.optional(),
   })
   .strict();
@@ -48,6 +51,10 @@ const towerSpecialSchema = z
 export const towerConfigSchema = z
   .object({
     id: towerIdSchema,
+    family: towerFamilySchema,
+    role: z.enum(['base', 'upgrade']),
+    tier: z.union([z.literal(1), z.literal(2)]),
+    baseTowerId: towerFamilySchema.optional(),
     name: z.string().min(1),
     cost: z.number().int().nonnegative(),
     attackType: attackTypeSchema,
@@ -57,7 +64,6 @@ export const towerConfigSchema = z
     targetMode: targetModeSchema,
     maxTargets: z.number().int().positive().optional(),
     aoeRadius: z.number().positive().optional(),
-    coneAngle: z.number().positive().optional(),
     special: towerSpecialSchema.optional(),
   })
   .strict();
@@ -68,7 +74,7 @@ export const enemyConfigSchema = z
     name: z.string().min(1),
     hp: z.number().positive(),
     speed: z.number().nonnegative(),
-    attackType: attackTypeSchema,
+    attackType: z.enum(['physical', 'magic']),
     atk: z.number().nonnegative(),
     attackSpeed: z.number().positive(),
     def: z.number().nonnegative(),

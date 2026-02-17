@@ -1,23 +1,29 @@
 import type { EffectType } from '@/types/effect.types';
 
-export type AttackType = 'physical' | 'magical';
-export type TargetMode = 'single' | 'aoe' | 'cone' | 'line';
-export type TowerType = 'archer' | 'warrior' | 'mage' | 'bomb';
+export type TowerFamily = 'agile' | 'brave' | 'capable' | 'smart';
+
+export type TowerType = 'agile' | 'brave' | 'capable' | 'smart';
+
 export type UpgradeType =
+  | 'archer'
   | 'blowgunner'
-  | 'crossbowman'
   | 'knight'
-  | 'suit'
-  | 'fireMage'
-  | 'iceMage'
+  | 'barbarian'
+  | 'dragonTamer'
+  | 'wizard'
   | 'logRoller'
-  | 'mortar';
+  | 'waterBomber';
+
+export type AttackType = 'physical' | 'magic' | 'summon' | 'production' | 'aoe';
+export type TargetMode = 'single' | 'aoe' | 'none';
 
 export interface TowerSpecial {
   effectType?: EffectType;
   effectDuration?: number;
   effectValue?: number;
   summonSoldiers?: boolean;
+  goldPerInterval?: number;
+  goldInterval?: number;
   stunAura?: {
     cooldown: number;
     duration: number;
@@ -27,6 +33,10 @@ export interface TowerSpecial {
 
 export interface TowerConfig {
   id: TowerType | UpgradeType;
+  family: TowerFamily;
+  role: 'base' | 'upgrade';
+  tier: 1 | 2;
+  baseTowerId?: TowerType;
   name: string;
   cost: number;
   attackType: AttackType;
@@ -36,7 +46,6 @@ export interface TowerConfig {
   targetMode: TargetMode;
   maxTargets?: number;
   aoeRadius?: number;
-  coneAngle?: number;
   special?: TowerSpecial;
 }
 

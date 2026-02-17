@@ -15,7 +15,7 @@ const SOLDIER_MOVE_SPEED = 128;
 
 export class Soldier {
   readonly config: SoldierConfig;
-  readonly type: 'warrior' | 'knight' | 'suit';
+  readonly type: 'brave' | 'knight' | 'barbarian';
   position: Position;
   rallyPoint: Position;
   status: SoldierStatus;
@@ -27,7 +27,7 @@ export class Soldier {
   private readonly stunAura?: StunAuraConfig;
   private stunCooldown: number;
 
-  constructor(config: SoldierConfig, type: 'warrior' | 'knight' | 'suit', spawnPoint: Position, rallyPoint: Position, stunAura?: StunAuraConfig) {
+  constructor(config: SoldierConfig, type: 'brave' | 'knight' | 'barbarian', spawnPoint: Position, rallyPoint: Position, stunAura?: StunAuraConfig) {
     this.config = config;
     this.type = type;
     this.spawnPoint = { ...spawnPoint };
@@ -181,7 +181,7 @@ export class SoldierSquad {
 
   constructor(
     config: SoldierConfig,
-    type: 'warrior' | 'knight' | 'suit',
+    type: 'brave' | 'knight' | 'barbarian',
     count: number,
     spawnPoint: Position,
     rallyPoint: Position,

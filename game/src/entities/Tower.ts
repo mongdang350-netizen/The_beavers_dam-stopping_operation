@@ -1,11 +1,10 @@
 import type { Enemy } from '@/entities/Enemy';
-import type { PathSystem } from '@/systems/PathSystem';
 import type { Position, TowerConfig, TowerType, UpgradeType } from '@/types';
 import { RANGE_UNIT } from '@/utils/constants';
-import { distance, isInCone } from '@/utils/math';
+import { distance } from '@/utils/math';
 
 const isUpgradeType = (value: TowerType | UpgradeType): value is UpgradeType => {
-  return !['archer', 'warrior', 'mage', 'bomb'].includes(value);
+  return !['agile', 'brave', 'barbarian', 'capable', 'smart'].includes(value);
 };
 
 export class Tower {
@@ -53,27 +52,7 @@ export class Tower {
       .slice(0, maxTargets);
   }
 
-  findConeTargets(enemies: Enemy[], direction: Position): Enemy[] {
-    const coneAngle = this.config.coneAngle ?? 60;
-    const range = this.config.range * RANGE_UNIT;
-    return enemies.filter((enemy) =>
-      isInCone(this.position, direction, enemy.position, coneAngle, range),
-    );
-  }
-
-  findLineTargets(enemies: Enemy[], pathSystem: PathSystem, pathRadiusTiles = 0.5): Enemy[] {
-    const radius = pathRadiusTiles * RANGE_UNIT;
-    return enemies.filter((enemy) => {
-      const nearestProgress = pathSystem.getProgressAtPosition(enemy.position);
-      const nearestPos = pathSystem.getPositionAtProgress(nearestProgress);
-      return distance(enemy.position, nearestPos) <= radius;
-    });
-  }
-
   canAttack(currentTime: number): boolean {
-    if (this.config.id === 'fireMage') {
-      return true;
-    }
     const effectiveAttackSpeed = this.getEffectiveAttackSpeed();
     if (effectiveAttackSpeed <= 0) {
       return false;
